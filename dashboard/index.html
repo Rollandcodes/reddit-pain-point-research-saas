@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PainPointRadar - Find Real Pain Points on Reddit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --primary-light: #2d2d2d;
+            --accent: #0066cc;
+            --accent-hover: #0052a3;
+            --text: #1a1a1a;
+            --text-muted: #666666;
+            --border: #e0e0e0;
+            --bg: #ffffff;
+            --bg-light: #f8f9fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 5%;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.02) 0%, rgba(0, 102, 204, 0.04) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero .emoji-large {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 102, 204, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--accent);
+        }
+
+        .social-proof {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-icon {
+            font-size: 1.2rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 5%;
+            background: var(--bg-light);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--primary);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent);
+        }
+
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+        }
+
+        .step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            border-radius: 6px;
+            background: var(--bg-light);
+            transition: all 0.3s;
+        }
+
+        .feature:hover {
+            background: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .feature p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Proof Section */
+        .proof {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.03) 0%, rgba(0, 102, 204, 0.06) 100%);
+        }
+
+        .testimonial {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .testimonial-text {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Bottom */
+        .cta-bottom {
+            padding: 5rem 5%;
+            text-align: center;
+            background: var(--primary);
+            color: white;
+        }
+
+        .cta-bottom h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .cta-bottom p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--accent);
+            padding: 1rem 2.5rem;
+            font-weight: 600;
+        }
+
+        .btn-white:hover {
+            background: var(--bg-light);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            background: #0a0a0a;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 5%;
+            }
+
+            nav ul {
+                gap: 1rem;
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .social-proof {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cta-bottom h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero, .how-it-works, .features, .proof {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">🎯 PainPointRadar</div>
+        <ul>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#proof">Proof</a></li>
+            <li><a href="#cta">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>
+            <span class="emoji-large">🔥</span>
+            Find Real Pain Points on Reddit.<br>
+            Build SaaS People Actually Want.
+        </h1>
+        <p>Turn thousands of Reddit discussions into clean, structured Excel/CSV insights—validated automatically for you.</p>
+        
+        <div class="cta-group">
+            <a href="onboarding.html" class="btn btn-primary">Start Free Scan</a>
+            <button class="btn btn-secondary" onclick="alert('Sample Report coming soon!')">Try Sample Report</button>
+        </div>
+
+        <div class="social-proof">
+            <div class="badge">
+                <span class="badge-icon">✨</span>
+                <span>Built with GitHub Copilot</span>
+            </div>
+            <div class="badge">
+                <span class="badge-icon">🎓</span>
+                <span>Free for students</span>
+            </div>
+            <div class="badge">
+                <span class="badge-icon">🔒</span>
+                <span>100% secure</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1️⃣</div>
+                <h3>Enter a Keyword or Subreddit</h3>
+                <p>Start with any topic. Examples: "CRM", "student budgeting", "remote workers"—we handle the rest.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2️⃣</div>
+                <h3>We Scan Millions of Reddit Posts</h3>
+                <p>Automatically filter by upvotes, emotional tone, and repeated complaints. Get the signal, not the noise.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3️⃣</div>
+                <h3>Download Your Pain-Point Report</h3>
+                <p>Structured Excel/CSV with problem summaries, frequency scores, sentiment analysis, and market gaps.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Powerful Features Built for Founders</h2>
+        
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">✔️</div>
+                <h4>AI-Powered Reddit Scraping</h4>
+                <p>Automatically extract relevant discussions from thousands of subreddits in seconds.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h4>Pain Point Clustering</h4>
+                <p>Group similar complaints and identify the top recurring problems.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">😊</div>
+                <h4>Sentiment Scoring</h4>
+                <p>Understand emotional intensity—frustration, urgency, and demand signals.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h4>Market Gap Scoring</h4>
+                <p>Quantify opportunity size and validate untapped market demand.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📥</div>
+                <h4>Excel/CSV Export</h4>
+                <p>Download clean, structured data ready for presentations and analysis.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔍</div>
+                <h4>Competitor Detection</h4>
+                <p>See what solutions people are asking for—and what's already being used.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h4>Auto-Summary for Founders</h4>
+                <p>Get instant insights: top problems, market size, and investment thesis in one report.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">💬</div>
+                <h4>User Quotes & Evidence</h4>
+                <p>Real Reddit quotes back every finding—pure evidence-based insights.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proof Section -->
+    <section class="proof" id="proof">
+        <h2 class="section-title">Trusted by Founders & Researchers</h2>
+        
+        <div class="testimonial">
+            <div class="testimonial-text">
+                "PainPointRadar saved me 40 hours of research. I validated my entire SaaS idea in 20 minutes—with data I could actually trust."
+            </div>
+            <div class="testimonial-author">
+                — Sarah Chen, Founder @ TechStack
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Bottom -->
+    <section class="cta-bottom" id="cta">
+        <h2>Build Something People Want</h2>
+        <p>Stop guessing. Start validating with real data from millions of conversations.</p>
+        <a href="onboarding.html" class="btn btn-white">Start Free Scan →</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 PainPointRadar. Built with GitHub Copilot. Data from Reddit API.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+            <a href="#" style="color: inherit; text-decoration: none;">Privacy</a> • 
+            <a href="#" style="color: inherit; text-decoration: none;">Terms</a> • 
+            <a href="#" style="color: inherit; text-decoration: none;">Contact</a>
+        </p>
+    </footer>
+</body>
+</html>
