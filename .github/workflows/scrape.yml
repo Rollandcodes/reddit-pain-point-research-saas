@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +21,14 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m src.main --subreddits SaaS --limit 200
       - run: mkdir -p public && cp output/* public/ 2>/dev/null || true
-      - run: python3 -c "open('public/index.html','w').write('<html><body><h1>PainPointRadar</h1><a href=\"sample_output.csv\">CSV</a> <a href=\"sample_output.xlsx\">XLSX</a> <a href=\"validation_report.html\">Report</a></body></html>')"
+      - run: python3 -c "import os; html = '''<!DOCTYPE html>
+<html>
+<head><title>PainPointRadar Reports</title></head>
+<body><h1>PainPointRadar Reports</h1><ul>
+<li><a href=\"sample_output.csv\">sample_output.csv</a></li>
+<li><a href=\"sample_output.xlsx\">sample_output.xlsx</a></li>
+<li><a href=\"validation_report.html\">validation_report.html</a></li>
+</ul></body></html>'''; open('public/index.html', 'w').write(html)"
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
