@@ -1,34 +1,89 @@
-name: Scheduled Reddit Pain-Point Scrape
+﻿name: PainPointRadar Pipeline
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 6 * * *' # daily at 06:00 UTC
-  workflow_dispatch:
 
 jobs:
-  run-scrape:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      SUBREDDITS: ${{ secrets.SUBREDDITS }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.x'
+
       - name: Install dependencies
-        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
-      - name: Run scrape and export
-        env:
-          BROWSEAI_RUN_URL: ${{ secrets.BROWSEAI_RUN_URL }}
-          BROWSEAI_API_KEY: ${{ secrets.BROWSEAI_API_KEY }}
-          SUBREDDITS: ${{ secrets.SUBREDDITS }}
         run: |
-          # default to SUBREDDITS env or use the action input
-          if [ -z "$SUBREDDITS" ]; then
-            SUBREDDITS="SaaS,startups"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run pipeline
+        id: run_pipeline
+        run: |
+          set -e
+          echo "Running PainPointRadar pipeline (subreddits: ${SUBREDDITS:-SaaS})"
+          python -m src.main --subreddits "${SUBREDDITS:-SaaS}" --limit 200 || exit_code=$?; echo "PIPELINE_EXIT=${exit_code:-0}" >> $GITHUB_ENV
+
+      - name: List outputs
+        run: |
+          echo "Artifacts in output/ (if any):"
+          ls -la output || true
+          if [ -f output/validation_report.html ]; then echo "---- report head ----"; head -n 120 output/validation_report.html; fi
+
+      - name: Prepare public site
+        run: |
+          mkdir -p public
+          cp -r output/* public/ || true
+          if [ ! -f public/index.html ]; then
+            cat > public/index.html <<'HTML'
+            <!doctype html>
+            <html>
+              <head><meta charset="utf-8"><title>PainPointRadar Reports</title></head>
+              <body>
+                <h1>PainPointRadar Reports</h1>
+                <ul>
+                <!-- file list -->
+                </ul>
+              </body>
+            </html>
+            HTML
+            for f in public/*; do echo "<li><a href=\"$(basename "$f")\">$(basename "$f")</a></li>" >> public/index.html; done
           fi
-          python -m src.main --subreddits "$SUBREDDITS" --limit 25
-      - name: Upload outputs as artifact
-        uses: actions/upload-artifact@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: reddit-painpoint-output
-          path: output/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+
+      - name: Notify Slack / Discord (always runs)
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -e
+          STATUS="${{ job.status }}"
+          echo "Job status: $STATUS"
+          PAGES_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          PAYLOAD_SLACK="{\"text\": \"PainPointRadar Pipeline finished with status: $STATUS\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*PainPointRadar Pipeline* finished with status: *$STATUS*\"}},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"<$PAGES_URL|View Reports>\"}}]}"
+          PAYLOAD_DISCORD="{\"content\": \"PainPointRadar Pipeline finished with status: $STATUS\n$PAGES_URL\"}"
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            echo "Sending Slack notification..."
+            curl -s -X POST -H 'Content-type: application/json' --data "$PAYLOAD_SLACK" "$SLACK_WEBHOOK" || true
+          else
+            echo "No SLACK_WEBHOOK_URL secret set; skipping Slack notification."
+          fi
+          if [ -n "$DISCORD_WEBHOOK" ]; then
+            echo "Sending Discord notification..."
+            curl -s -X POST -H 'Content-Type: application/json' --data "$PAYLOAD_DISCORD" "$DISCORD_WEBHOOK" || true
+          else
+            echo "No DISCORD_WEBHOOK_URL secret set; skipping Discord notification."
+          fi

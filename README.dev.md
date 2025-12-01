@@ -1,6 +1,6 @@
-# Reddit Pain-Point Research — Developer README (Minimal Demo)
+﻿# PainPointRadar Research â€” Developer README (Minimal Demo)
 
-This is a minimal runnable demo for the "Reddit Pain-Point Research" service.
+This is a minimal runnable demo for the "PainPointRadar Research" service.
 
 Quick start (Windows PowerShell):
 
@@ -17,3 +17,4 @@ What it does:
 Notes:
 - This demo avoids third-party paid services (Browse.ai) so you can run it locally without API keys. For production you may prefer Browse.ai or PRAW.
 - To push to Google Sheets, add the service account JSON path to `GOOGLE_SERVICE_ACCOUNT_JSON` and implement the integration.
+

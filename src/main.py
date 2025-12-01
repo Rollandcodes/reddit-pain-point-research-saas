@@ -1,4 +1,4 @@
-"""Minimal CLI to run a Pushshift-based scrape + analysis + export pipeline."""
+﻿"""Minimal CLI to run a Pushshift-based scrape + analysis + export pipeline."""
 import argparse
 from dotenv import load_dotenv
 from src.scrape_reddit import get_submissions
@@ -24,7 +24,7 @@ def _parse_subreddits(value: str):
 
 def main():
     load_dotenv()
-    parser = argparse.ArgumentParser(description="Reddit pain-point research demo")
+    parser = argparse.ArgumentParser(description="PainPointRadar research demo")
     parser.add_argument("--subreddits", default="SaaS,startups", help="Comma-separated subreddit names (no r/) or with r/")
     parser.add_argument("--keywords", default="", help="Comma-separated keywords to filter (optional)")
     parser.add_argument("--limit", type=int, default=25, help="Number of posts to fetch per subreddit")
@@ -97,3 +97,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

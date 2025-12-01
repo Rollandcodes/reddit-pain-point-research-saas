@@ -1,6 +1,6 @@
-# Testing the GitHub Actions Workflow
+﻿# Testing the GitHub Actions Workflow
 
-This guide walks you through triggering and monitoring the automated Reddit Pain-Point Research workflow.
+This guide walks you through triggering and monitoring the automated PainPointRadar Research workflow.
 
 ## Step 1: Add Repository Secrets (Required)
 
@@ -26,7 +26,7 @@ gh secret list
 ### Option B: Using GitHub UI
 
 1. Go to: https://github.com/Rollandcodes/reddit-pain-point-research-saas
-2. Click **Settings** → **Secrets and variables** → **Actions**
+2. Click **Settings** â†’ **Secrets and variables** â†’ **Actions**
 3. Click **New repository secret**
 4. Add each secret (BROWSEAI_RUN_URL, BROWSEAI_API_KEY, SUBREDDITS)
 
@@ -42,14 +42,14 @@ gh workflow run scrape.yml --repo Rollandcodes/reddit-pain-point-research-saas
 
 You should see output like:
 ```
-✓ Created workflow_dispatch event for scrape.yml at main
+âœ“ Created workflow_dispatch event for scrape.yml at main
 ```
 
 ### Option B: Using GitHub UI
 
 1. Go to: https://github.com/Rollandcodes/reddit-pain-point-research-saas/actions
-2. Click **Scheduled Reddit Pain-Point Scrape** workflow
-3. Click **Run workflow** → **Run workflow** (keep default branch as `main`)
+2. Click **Scheduled PainPointRadar Scrape** workflow
+3. Click **Run workflow** â†’ **Run workflow** (keep default branch as `main`)
 
 ---
 
@@ -71,16 +71,16 @@ gh run view --repo Rollandcodes/reddit-pain-point-research-saas <RUN_ID> --log
 ### Via GitHub UI
 
 1. Go to: https://github.com/Rollandcodes/reddit-pain-point-research-saas/actions
-2. Click the latest **Scheduled Reddit Pain-Point Scrape** run
+2. Click the latest **Scheduled PainPointRadar Scrape** run
 3. Click **Set up Python** (or any step) to see logs in real-time
 4. Look for:
-   - ✅ "Fetching up to 25 posts per subreddit"
-   - ✅ "Calculating pain-point scores"
-   - ✅ "Generating suggested solutions"
-   - ✅ "Detecting competitors"
-   - ✅ "Estimating revenue potential"
-   - ✅ "Generating validation report"
-   - ✅ "Wrote CSV/Excel/Report"
+   - âœ… "Fetching up to 25 posts per subreddit"
+   - âœ… "Calculating pain-point scores"
+   - âœ… "Generating suggested solutions"
+   - âœ… "Detecting competitors"
+   - âœ… "Estimating revenue potential"
+   - âœ… "Generating validation report"
+   - âœ… "Wrote CSV/Excel/Report"
 
 ---
 
@@ -104,9 +104,9 @@ gh run download <RUN_ID> -D ./downloaded_artifacts --repo Rollandcodes/reddit-pa
 2. Scroll down to **Artifacts** section
 3. Click **reddit-painpoint-output** to download
 4. Extract the ZIP file to get:
-   - `sample_output.csv` — Enhanced with pain scores, solutions, competitors, revenue
-   - `sample_output.xlsx` — Same data in Excel format
-   - `validation_report.html` — Beautiful investor-ready report
+   - `sample_output.csv` â€” Enhanced with pain scores, solutions, competitors, revenue
+   - `sample_output.xlsx` â€” Same data in Excel format
+   - `validation_report.html` â€” Beautiful investor-ready report
 
 ---
 
@@ -123,11 +123,11 @@ open ./downloaded_artifacts/output/validation_report.html
 ```
 
 **The report should show:**
-- 📊 Executive summary with average pain scores
-- 🎯 Top 10 pain-points ranked by score
-- 💡 Suggested solutions with market sizing
-- 🏆 Competitive landscape analysis
-- 💰 Revenue potential estimates
+- ðŸ“Š Executive summary with average pain scores
+- ðŸŽ¯ Top 10 pain-points ranked by score
+- ðŸ’¡ Suggested solutions with market sizing
+- ðŸ† Competitive landscape analysis
+- ðŸ’° Revenue potential estimates
 
 ### Inspect CSV Data
 
@@ -159,9 +159,9 @@ gh run view --repo Rollandcodes/reddit-pain-point-research-saas <RUN_ID> --log
 ```
 
 **Common issues:**
-- **"No module named 'requests'"** — Dependencies not installed (GitHub Actions should install them)
-- **"Pushshift API timeout"** — Reddit API is slow; workflow will retry or use cached data
-- **"Competition detector failed"** — GitHub API rate limit; gracefully degrades to heuristics
+- **"No module named 'requests'"** â€” Dependencies not installed (GitHub Actions should install them)
+- **"Pushshift API timeout"** â€” Reddit API is slow; workflow will retry or use cached data
+- **"Competition detector failed"** â€” GitHub API rate limit; gracefully degrades to heuristics
 
 ### No Artifacts
 
@@ -179,12 +179,12 @@ gh run view --repo Rollandcodes/reddit-pain-point-research-saas <RUN_ID> --log
 
 ## Next Steps
 
-1. ✅ **Run the workflow** (follow Step 2 above)
-2. ✅ **Monitor execution** (follow Step 3)
-3. ✅ **Download results** (follow Step 4)
-4. ✅ **Inspect outputs** (follow Step 5)
-5. 🚀 **Iterate:** Adjust subreddits, keywords, and limits as needed
-6. 🚀 **Schedule:** Workflow runs daily at 6:00 UTC; or manually dispatch anytime
+1. âœ… **Run the workflow** (follow Step 2 above)
+2. âœ… **Monitor execution** (follow Step 3)
+3. âœ… **Download results** (follow Step 4)
+4. âœ… **Inspect outputs** (follow Step 5)
+5. ðŸš€ **Iterate:** Adjust subreddits, keywords, and limits as needed
+6. ðŸš€ **Schedule:** Workflow runs daily at 6:00 UTC; or manually dispatch anytime
 
 ---
 
@@ -212,13 +212,14 @@ git push origin main
 
 ---
 
-## Success Criteria ✅
+## Success Criteria âœ…
 
 Your workflow test is successful when you can:
 - [ ] Trigger the workflow via CLI or UI
-- [ ] See all 5 features run (scoring → solutions → competitors → revenue → report)
+- [ ] See all 5 features run (scoring â†’ solutions â†’ competitors â†’ revenue â†’ report)
 - [ ] Download artifacts containing CSV, Excel, and HTML report
 - [ ] Open the HTML report and see pain scores, solutions, competitors, and revenue estimates
 - [ ] Confirm data matches the number of posts fetched from Reddit
 
-**You're done!** 🎉
+**You're done!** ðŸŽ‰
+

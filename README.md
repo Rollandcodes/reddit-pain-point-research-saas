@@ -1,10 +1,10 @@
-# Reddit Pain-Point Research SaaS
+﻿# PainPointRadar Research SaaS
 
 > Transform Reddit discussions into structured Excel/CSV pain-point data for SaaS founders
 
-## 📋 Project Overview
+## ðŸ“‹ Project Overview
 
-**Product Name:** Reddit Pain-Point Research Service
+**Product Name:** PainPointRadar Research Service
 
 **Value Proposition:** A web scraping and data analysis service that transforms Reddit discussions into structured Excel/CSV pain-point data for SaaS founders. Uses Browse.ai automation to help entrepreneurs validate their SaaS ideas through real user feedback.
 
@@ -19,7 +19,7 @@
 
 **Delivery Time:** 24-48 hours
 
-## 🚀 Features
+## ðŸš€ Features
 
 - Automated Reddit scraping using Browse.ai
 - Scrapes 25 Reddit posts per run
@@ -36,10 +36,10 @@
   - Severity Rating
   - Notes
 
-## 🔗 Key Resources
+## ðŸ”— Key Resources
 
 ### Browse.ai Scraper
-- **Status:** Active ✅
+- **Status:** Active âœ…
 - **Capability:** Scrapes 25 Reddit posts per run
 - **Cost:** Free tier
 
@@ -48,14 +48,14 @@
 - Contains 11 analyzed pain points (1 sample + 10 real)
 - Ready-to-use format for client delivery
 
-## 💡 Use Cases
+## ðŸ’¡ Use Cases
 
 1. **SaaS Idea Validation:** Find real problems people are discussing
 2. **Market Research:** Understand pain points in specific niches
 3. **Product Development:** Identify features users actually need
 4. **Competitor Analysis:** See what frustrations exist with current solutions
 
-## 📊 Deliverables
+## ðŸ“Š Deliverables
 
 Clients receive:
 - Excel/CSV file with structured pain-point data
@@ -63,25 +63,25 @@ Clients receive:
 - Actionable pain summaries
 - Source links for verification
 
-## 🛠️ Tech Stack
+## ðŸ› ï¸ Tech Stack
 
 - **Web Scraping:** Browse.ai
 - **Data Processing:** Python
 - **Data Storage:** Google Sheets
 - **Output Format:** Excel/CSV
 
-## 📝 License
+## ðŸ“ License
 
 MIT License - see the [LICENSE](LICENSE) file for details
 
-## 👤 Author
+## ðŸ‘¤ Author
 
 **Rolland Muhanguzi**
 - LinkedIn: [Rolland Muhanguzi](https://www.linkedin.com/in/rolland-muhanguzi-507b6136a/)
 - GitHub: [@Rollandcodes](https://github.com/Rollandcodes)
 - Email: muhanguzirollands@gmail.com
 
-## 🎯 Project Status
+## ðŸŽ¯ Project Status
 
 **Status:** Active Development
 **Last Updated:** November 30, 2025
@@ -89,3 +89,4 @@ MIT License - see the [LICENSE](LICENSE) file for details
 ---
 
 *Helping entrepreneurs validate SaaS ideas through real user feedback from Reddit discussions.*
+
