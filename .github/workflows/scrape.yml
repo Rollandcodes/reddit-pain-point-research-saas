@@ -6,19 +6,13 @@ on:
     - cron: '0 6 * * *'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      - run: |
-          pip install -r requirements.txt
-          python -m src.main --subreddits SaaS --limit 200
-      - run: mkdir -p public && cp output/* public/ 2>/dev/null || true
-      - run: echo "<!DOCTYPE html><html><body><h1>PainPointRadar Reports</h1><ul><li><a href=\"sample_output.csv\">sample_output.csv</a></li><li><a href=\"sample_output.xlsx\">sample_output.xlsx</a></li><li><a href=\"validation_report.html\">validation_report.html</a></li></ul></body></html>" > public/index.html
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+      - run: pip install -r requirements.txt
+      - run: python -m src.main --subreddits SaaS --limit 200
+      - run: ls -la output/
