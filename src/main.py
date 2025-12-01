@@ -5,6 +5,11 @@ from src.scrape_reddit import get_submissions
 from src.analyze import transform_to_schema
 from src.exporter import write_csv, write_excel
 from src.browseai_runner import run_from_env
+from src.scoring import calculate_pain_score
+from src.solution_generator import generate_solutions
+from src.competitor_detector import detect_competitors
+from src.revenue_estimator import estimate_revenue_potential
+from src.pdf_reporter import generate_report
 import os
 
 
@@ -52,10 +57,29 @@ def main():
     records = transform_to_schema(raw)
     print(f"Transformed to {len(records)} structured records")
 
+    # Apply 5 advanced features
+    print("Calculating pain-point scores...")
+    records = calculate_pain_score(records)
+    
+    print("Generating suggested solutions...")
+    records = generate_solutions(records)
+    
+    print("Detecting competitors...")
+    records = detect_competitors(records)
+    
+    print("Estimating revenue potential...")
+    records = estimate_revenue_potential(records)
+
+    # Export to CSV and Excel
     out_csv = write_csv(records)
     out_xlsx = write_excel(records)
     print(f"Wrote CSV -> {out_csv}")
     print(f"Wrote Excel -> {out_xlsx}")
+    
+    # Generate PDF/HTML report
+    print("Generating validation report...")
+    report_path = generate_report(records)
+    print(f"Generated report -> {report_path}")
 
     # Optionally push to Google Sheets if service account JSON provided
     if os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):

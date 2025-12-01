@@ -1,0 +1,136 @@
+"""Generate PDF/HTML validation reports for investors and founders."""
+from typing import List, Dict
+from datetime import datetime
+import os
+
+def _generate_html_content(records: List[Dict], title: str = "Reddit Pain-Point Validation Report") -> str:
+    """Generate HTML content for report."""
+    
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>{title}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+        h1 {{ color: #333; border-bottom: 3px solid #0066cc; padding-bottom: 10px; }}
+        h2 {{ color: #0066cc; margin-top: 30px; }}
+        .metric {{ background: #f0f0f0; padding: 15px; margin: 10px 0; border-left: 4px solid #0066cc; border-radius: 4px; }}
+        .quote {{ background: #f9f9f9; padding: 15px; margin: 10px 0; border-left: 4px solid #ff6600; font-style: italic; }}
+        .summary {{ background: #e6f2ff; padding: 15px; margin: 10px 0; border-radius: 5px; }}
+        table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+        th, td {{ border: 1px solid #ddd; padding: 12px; text-align: left; }}
+        th {{ background: #0066cc; color: white; }}
+        tr:nth-child(even) {{ background: #f9f9f9; }}
+        .footer {{ margin-top: 30px; text-align: center; color: #999; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{title}</h1>
+        <p><strong>Generated:</strong> {datetime.now().strftime('%B %d, %Y at %H:%M:%S')}</p>
+        
+        <div class="summary">
+            <h2>📊 Executive Summary</h2>
+            <p><strong>Total Pain-Points Analyzed:</strong> {len(records)}</p>
+"""
+    
+    if records:
+        avg_pain = int(sum(r.get('pain_score', 0) for r in records) / len(records))
+        avg_revenue = int(sum(r.get('revenue_potential_score', 0) for r in records) / len(records))
+        top_opportunity = records[0].get('pain_summary', 'N/A')
+        html += f"""
+            <p><strong>Average Pain Score:</strong> {avg_pain}/100</p>
+            <p><strong>Average Revenue Potential:</strong> {avg_revenue}/100</p>
+            <p><strong>Highest Opportunity:</strong> {top_opportunity}</p>
+        </div>
+        
+        <h2>🎯 Top Pain-Points & Opportunities</h2>
+        <table>
+            <tr>
+                <th>Pain Summary</th>
+                <th>Category</th>
+                <th>Pain Score</th>
+                <th>Revenue Potential</th>
+                <th>Competition</th>
+            </tr>
+"""
+        
+        for rec in records[:10]:
+            html += f"""
+            <tr>
+                <td>{rec.get('pain_summary', 'N/A')[:50]}</td>
+                <td>{rec.get('category', 'N/A')}</td>
+                <td>{rec.get('pain_score', 'N/A')}</td>
+                <td>{rec.get('revenue_potential_score', 'N/A')}</td>
+                <td>{rec.get('competition_level', 'N/A')}</td>
+            </tr>
+"""
+        
+        html += """
+        </table>
+        
+        <h2>💡 Suggested Solutions & Market Sizing</h2>
+"""
+        
+        for idx, rec in enumerate(records[:5], 1):
+            html += f"""
+        <div class="metric">
+            <h3>{idx}. {rec.get('suggested_product_idea', 'N/A')}</h3>
+            <p><strong>Pain Point:</strong> {rec.get('pain_summary', 'N/A')}</p>
+            <p><strong>Target Market Size:</strong> {rec.get('estimated_market_size', 'N/A'):,} users</p>
+            <p><strong>Addressable Audience:</strong> {rec.get('estimated_target_audience', 'N/A'):,} users</p>
+            <p><strong>Recommended Pricing:</strong> {rec.get('recommended_pricing', 'N/A')}</p>
+            <p><strong>Est. ARR Potential:</strong> {rec.get('estimated_arr_potential', 'N/A')}</p>
+            <p><strong>Key Features:</strong> {rec.get('suggested_features', 'N/A')}</p>
+            <p><strong>MVP:</strong> {rec.get('suggested_mvp', 'N/A')}</p>
+            <p><strong>Go-to-Market:</strong> {rec.get('suggested_marketing_angle', 'N/A')}</p>
+        </div>
+"""
+        
+        html += """
+        <h2>🏆 Competitive Landscape</h2>
+        <table>
+            <tr>
+                <th>Opportunity</th>
+                <th>Competition Level</th>
+                <th>Market Entry Difficulty</th>
+            </tr>
+"""
+        
+        for rec in records[:5]:
+            comp = rec.get('competition_level', 'Medium')
+            difficulty = "High" if comp == "High" else ("Medium" if comp == "Medium" else "Low")
+            html += f"""
+            <tr>
+                <td>{rec.get('pain_summary', 'N/A')[:40]}</td>
+                <td>{comp}</td>
+                <td>{difficulty}</td>
+            </tr>
+"""
+        
+        html += """
+        </table>
+        
+        <div class="footer">
+            <p>This report was automatically generated by <strong>Reddit Pain-Point Research SaaS</strong>.</p>
+            <p>Use this data to validate ideas, pitch to investors, and build products users actually need.</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+    
+    return html
+
+def generate_report(records: List[Dict], output_dir: str = "output") -> str:
+    """Save HTML report and return path."""
+    os.makedirs(output_dir, exist_ok=True)
+    
+    output_path = os.path.join(output_dir, "validation_report.html")
+    html_content = _generate_html_content(records)
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    
+    return output_path
