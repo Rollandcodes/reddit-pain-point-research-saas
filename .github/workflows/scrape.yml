@@ -15,21 +15,8 @@ jobs:
           python-version: '3.x'
       - run: pip install -r requirements.txt
       - run: python -m src.main --subreddits SaaS --limit 200
-      - run: |
-          mkdir -p public
-          cp output/* public/ 2>/dev/null || true
-          python3 << PYSCRIPT
-          html = """<!DOCTYPE html>
-          <html>
-          <head><title>PainPointRadar Reports</title></head>
-          <body><h1>PainPointRadar Reports</h1><ul>
-          <li><a href="sample_output.csv">sample_output.csv</a></li>
-          <li><a href="sample_output.xlsx">sample_output.xlsx</a></li>
-          <li><a href="validation_report.html">validation_report.html</a></li>
-          </ul></body></html>"""
-          with open("public/index.html", "w") as f:
-              f.write(html)
-          PYSCRIPT
+      - run: mkdir -p public && cp output/* public/ 2>/dev/null || true
+      - run: python3 -c "open('public/index.html','w').write('<html><body><h1>PainPointRadar</h1><a href=\"sample_output.csv\">CSV</a> <a href=\"sample_output.xlsx\">XLSX</a> <a href=\"validation_report.html\">Report</a></body></html>')"
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
