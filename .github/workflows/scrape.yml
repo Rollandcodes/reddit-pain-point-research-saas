@@ -8,54 +8,17 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      SUBREDDITS: ${{ secrets.SUBREDDITS }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
       - run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - run: |
-          echo "Running PainPointRadar pipeline"
-          python -m src.main --subreddits "${SUBREDDITS:-SaaS}" --limit 200
-
-      - run: |
-          mkdir -p public
-          cp -r output/* public/ 2>/dev/null || true
-          cat > public/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head><title>PainPointRadar Reports</title></head>
-          <body><h1>PainPointRadar Reports</h1><ul id="list"></ul></body>
-          <script>
-            const files = ['sample_output.csv', 'sample_output.xlsx', 'validation_report.html'];
-            files.forEach(f => {
-              const li = document.createElement('li');
-              li.innerHTML = '<a href="' + f + '">' + f + '</a>';
-              document.getElementById('list').appendChild(li);
-            });
-          </script>
-          </html>
-          EOF
-
+          python -m src.main --subreddits SaaS --limit 200
+      - run: mkdir -p public && cp output/* public/ 2>/dev/null || true
+      - run: echo "<!DOCTYPE html><html><body><h1>PainPointRadar Reports</h1><ul><li><a href=\"sample_output.csv\">sample_output.csv</a></li><li><a href=\"sample_output.xlsx\">sample_output.xlsx</a></li><li><a href=\"validation_report.html\">validation_report.html</a></li></ul></body></html>" > public/index.html
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-
-      - if: always()
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          STATUS="${{ job.status }}"
-          PAGES_URL="https://${{ github.repository_owner }}.github.io/reddit-pain-point-research-saas/"
-          echo "Pipeline completed with status: $STATUS"
-          [ -n "$SLACK_WEBHOOK" ] && curl -s -X POST -H 'Content-type: application/json' --data "{\"text\":\"PainPointRadar Pipeline: $STATUS\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Status:* $STATUS\n<$PAGES_URL|View Reports>\"}}]}" "$SLACK_WEBHOOK" || true
-          [ -n "$DISCORD_WEBHOOK" ] && curl -s -X POST -H 'Content-Type: application/json' --data "{\"content\":\"PainPointRadar Pipeline: $STATUS\n$PAGES_URL\"}" "$DISCORD_WEBHOOK" || true
