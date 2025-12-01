@@ -15,4 +15,21 @@ jobs:
           python-version: '3.x'
       - run: pip install -r requirements.txt
       - run: python -m src.main --subreddits SaaS --limit 200
-      - run: ls -la output/
+      - run: |
+          mkdir -p public
+          cp output/* public/ 2>/dev/null || true
+          cat > public/index.html << EOF
+          <!DOCTYPE html>
+          <html>
+          <head><title>PainPointRadar Reports</title></head>
+          <body><h1>PainPointRadar Reports</h1>
+          <ul>
+          <li><a href="sample_output.csv">sample_output.csv</a></li>
+          <li><a href="sample_output.xlsx">sample_output.xlsx</a></li>
+          <li><a href="validation_report.html">validation_report.html</a></li>
+          </ul></body></html>
+          EOF
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
