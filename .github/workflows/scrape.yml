@@ -41,21 +41,24 @@ jobs:
         run: |
           mkdir -p public
           cp -r output/* public/ || true
-          if [ ! -f public/index.html ]; then
-            cat > public/index.html <<'HTML'
-            <!doctype html>
-            <html>
-              <head><meta charset="utf-8"><title>PainPointRadar Reports</title></head>
-              <body>
-                <h1>PainPointRadar Reports</h1>
-                <ul>
-                <!-- file list -->
-                </ul>
-              </body>
-            </html>
-            HTML
-            for f in public/*; do echo "<li><a href=\"$(basename "$f")\">$(basename "$f")</a></li>" >> public/index.html; done
-          fi
+          cat > public/index.html << "HTMLEOF"
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>PainPointRadar Reports</title></head>
+  <body>
+    <h1>PainPointRadar Reports</h1>
+    <ul>
+HTMLEOF
+          for f in public/*; do
+            if [ "$(basename "$f")" != "index.html" ]; then
+              echo "<li><a href=\"$(basename "$f")\">$(basename "$f")</a></li>" >> public/index.html
+            fi
+          done
+          cat >> public/index.html << "HTMLEOF"
+    </ul>
+  </body>
+</html>
+HTMLEOF
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
