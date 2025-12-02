@@ -129,6 +129,6 @@ def run_from_env(payload: Optional[Dict] = None, timeout: int = 300) -> Dict[str
         TimeoutError: If the run does not complete within the timeout period.
     """
     validate_environment()
-    run_url = os.environ.get("BROWSEAI_RUN_URL")
-    api_key = os.environ.get("BROWSEAI_API_KEY")
+    run_url = os.environ["BROWSEAI_RUN_URL"]
+    api_key = os.environ["BROWSEAI_API_KEY"]
     return run_browseai_job(run_url=run_url, api_key=api_key, payload=payload, timeout=timeout)

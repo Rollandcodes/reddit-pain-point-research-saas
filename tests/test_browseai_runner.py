@@ -75,9 +75,20 @@ class TestRunFromEnv:
 
     def test_missing_env_vars(self):
         """Test that missing environment variables raise error."""
-        with patch.dict(os.environ, {}, clear=True):
-            with pytest.raises(EnvironmentError):
-                run_from_env()
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "", "BROWSEAI_API_KEY": ""}, clear=False):
+            # Clear the specific keys we're testing
+            env_backup = {
+                "BROWSEAI_RUN_URL": os.environ.pop("BROWSEAI_RUN_URL", None),
+                "BROWSEAI_API_KEY": os.environ.pop("BROWSEAI_API_KEY", None),
+            }
+            try:
+                with pytest.raises(EnvironmentError):
+                    run_from_env()
+            finally:
+                # Restore any existing values
+                for key, val in env_backup.items():
+                    if val is not None:
+                        os.environ[key] = val
 
     @patch("src.browseai_runner.run_browseai_job")
     def test_calls_run_browseai_job(self, mock_run):
