@@ -8,3 +8,6 @@ google-auth-oauthlib
 google-auth-httplib2
 reportlab
 flask
+fastapi
+uvicorn[standard]
+pydantic
