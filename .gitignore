@@ -4,5 +4,11 @@ __pycache__/
 output/
 .venv
 
+# Test cache
+.pytest_cache/
+
+# Build artifacts
+public/
+
 # Custom entries
 output/
