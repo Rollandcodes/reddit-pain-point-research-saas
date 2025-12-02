@@ -559,6 +559,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
         let currentStep = 1;
         let formData = {
@@ -568,6 +569,7 @@
             subreddit: null,
             scanType: null
         };
+        let scanResults = null;
 
         // Update progress bar
         function updateProgress() {
@@ -724,42 +726,158 @@
             }
         }
 
-        function simulateProgress() {
+        async function runAnalysis() {
             let progress = 0;
             const statuses = [
-                'Fetching posts...',
+                'Connecting to API...',
+                'Fetching demo data...',
                 'Analyzing sentiment...',
-                'Clustering pain points...',
-                'Calculating scores...',
-                'Generating report...',
-                'Finalizing...'
+                'Calculating pain scores...',
+                'Generating solutions...',
+                'Finalizing report...'
             ];
             let statusIndex = 0;
 
-            const interval = setInterval(() => {
-                progress += Math.random() * 25;
-                if (progress > 100) progress = 100;
-
+            // Update progress UI
+            const updateUI = () => {
                 document.getElementById('progress-percentage').textContent = Math.round(progress) + '%';
-                document.getElementById('progress-status').textContent = statuses[statusIndex];
+                document.getElementById('progress-status').textContent = statuses[Math.min(statusIndex, statuses.length - 1)];
+            };
 
-                if (progress >= 100) {
-                    clearInterval(interval);
+            try {
+                // Start progress animation
+                const progressInterval = setInterval(() => {
+                    if (progress < 30) {
+                        progress += 5;
+                        statusIndex = 0;
+                    }
+                    updateUI();
+                }, 200);
+
+                // Call the backend API
+                const response = await fetch(CONFIG.getUrl(CONFIG.ENDPOINTS.DEMO));
+                
+                clearInterval(progressInterval);
+                progress = 50;
+                statusIndex = 2;
+                updateUI();
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                scanResults = data;
+
+                // Animate remaining progress
+                const finishInterval = setInterval(() => {
+                    progress += 10;
+                    statusIndex = Math.floor(progress / 20);
+                    updateUI();
+                    
+                    if (progress >= 100) {
+                        clearInterval(finishInterval);
+                        document.getElementById('progress-percentage').textContent = '100%';
+                        document.getElementById('progress-status').textContent = 'Complete!';
+                        
+                        // Update results summary
+                        updateResultsSummary(data);
+                        
+                        setTimeout(() => {
+                            currentStep = 5;
+                            showStep(currentStep);
+                        }, 800);
+                    }
+                }, 150);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                document.getElementById('progress-status').textContent = 'Using demo data...';
+                
+                // Fall back to demo mode
+                setTimeout(() => {
+                    scanResults = {
+                        success: true,
+                        count: 3,
+                        pain_points: [
+                            { pain_summary: 'Pricing issues', category: 'Pricing', pain_score: 85 },
+                            { pain_summary: 'Bug reports', category: 'Bugs', pain_score: 72 },
+                            { pain_summary: 'Feature requests', category: 'Feature', pain_score: 65 }
+                        ]
+                    };
                     document.getElementById('progress-percentage').textContent = '100%';
-                    document.getElementById('progress-status').textContent = 'Complete!';
+                    document.getElementById('progress-status').textContent = 'Demo complete!';
                     
                     setTimeout(() => {
                         currentStep = 5;
                         showStep(currentStep);
-                    }, 1000);
-                } else if (progress > statusIndex * 16) {
-                    statusIndex++;
+                    }, 800);
+                }, 1500);
+            }
+        }
+
+        function updateResultsSummary(data) {
+            if (data && data.count) {
+                const summaryEl = document.querySelector('#step-5 p:last-of-type');
+                if (summaryEl) {
+                    const avgScore = data.pain_points 
+                        ? Math.round(data.pain_points.reduce((a, b) => a + (b.pain_score || 0), 0) / data.pain_points.length)
+                        : 0;
+                    summaryEl.innerHTML = `<strong>Key Findings:</strong><br>
+                        ${data.count} posts analyzed • ${data.pain_points?.length || 0} pain points identified • ${avgScore}% avg pain score`;
                 }
-            }, 400);
+            }
+        }
+
+        function simulateProgress() {
+            runAnalysis();
         }
 
         function downloadFile(format) {
-            alert(`Downloading report as ${format.toUpperCase()}...\n\nIn a real app, this would download:\nsample_output.${format === 'xlsx' ? 'xlsx' : format}`);
+            // In production, these would be real file downloads from the backend
+            const backendUrl = CONFIG.BACKEND_URL;
+            
+            if (scanResults && scanResults.pain_points) {
+                // Create downloadable content from scan results
+                let content, filename, mimeType;
+                
+                if (format === 'csv') {
+                    const headers = ['pain_summary', 'category', 'pain_score', 'severity_rating'];
+                    const rows = scanResults.pain_points.map(p => 
+                        headers.map(h => `"${(p[h] || '').toString().replace(/"/g, '""')}"`).join(',')
+                    );
+                    content = [headers.join(','), ...rows].join('\n');
+                    filename = 'painpoint_report.csv';
+                    mimeType = 'text/csv';
+                } else if (format === 'html') {
+                    content = `<!DOCTYPE html>
+<html><head><title>PainPointRadar Report</title>
+<style>body{font-family:sans-serif;padding:2rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#0066cc;color:white}</style></head>
+<body><h1>PainPointRadar Report</h1>
+<p>Generated: ${new Date().toLocaleString()}</p>
+<table><tr><th>Pain Point</th><th>Category</th><th>Score</th></tr>
+${scanResults.pain_points.map(p => `<tr><td>${p.pain_summary || ''}</td><td>${p.category || ''}</td><td>${p.pain_score || ''}</td></tr>`).join('')}
+</table></body></html>`;
+                    filename = 'painpoint_report.html';
+                    mimeType = 'text/html';
+                } else {
+                    alert('Excel export requires backend. Please use CSV for now.');
+                    return;
+                }
+                
+                // Create and trigger download
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } else {
+                alert(`No scan results available. Please run a scan first.`);
+            }
         }
 
         // Initialize
