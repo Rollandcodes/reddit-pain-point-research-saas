@@ -6,12 +6,12 @@
  */
 
 const CONFIG = {
-    // Backend API URL - Update this after deploying to Render
+    // Backend API URL
     // Local development: 'http://localhost:8000'
-    // Production: 'https://painpointradar-api.onrender.com'
+    // Production: 'https://painpointradar.onrender.com'
     BACKEND_URL: window.location.hostname === 'localhost' 
         ? 'http://localhost:8000'
-        : 'https://painpointradar-api.onrender.com',
+        : 'https://painpointradar.onrender.com',
     
     // API Endpoints
     ENDPOINTS: {
