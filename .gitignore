@@ -4,5 +4,8 @@ __pycache__/
 output/
 .venv
 
+# Test cache
+.pytest_cache/
+
 # Custom entries
 output/

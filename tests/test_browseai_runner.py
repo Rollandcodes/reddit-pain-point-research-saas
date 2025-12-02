@@ -1,0 +1,93 @@
+"""Smoke tests for browseai_runner module."""
+import os
+import pytest
+from unittest.mock import patch, MagicMock
+from src.browseai_runner import run_browseai_job, run_from_env, validate_environment
+
+
+class TestValidateEnvironment:
+    """Tests for validate_environment function."""
+
+    def test_missing_run_url(self):
+        """Test that missing BROWSEAI_RUN_URL raises error."""
+        with patch.dict(os.environ, {"BROWSEAI_API_KEY": "test_key"}, clear=True):
+            with pytest.raises(EnvironmentError) as exc_info:
+                validate_environment()
+            assert "BROWSEAI_RUN_URL" in str(exc_info.value)
+
+    def test_missing_api_key(self):
+        """Test that missing BROWSEAI_API_KEY raises error."""
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "http://test.url"}, clear=True):
+            with pytest.raises(EnvironmentError) as exc_info:
+                validate_environment()
+            assert "BROWSEAI_API_KEY" in str(exc_info.value)
+
+    def test_empty_run_url(self):
+        """Test that empty BROWSEAI_RUN_URL raises error."""
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "", "BROWSEAI_API_KEY": "test_key"}, clear=True):
+            with pytest.raises(EnvironmentError) as exc_info:
+                validate_environment()
+            assert "BROWSEAI_RUN_URL" in str(exc_info.value)
+
+    def test_empty_api_key(self):
+        """Test that empty BROWSEAI_API_KEY raises error."""
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "http://test.url", "BROWSEAI_API_KEY": ""}, clear=True):
+            with pytest.raises(EnvironmentError) as exc_info:
+                validate_environment()
+            assert "BROWSEAI_API_KEY" in str(exc_info.value)
+
+    def test_valid_environment(self):
+        """Test that valid environment passes validation."""
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "http://test.url", "BROWSEAI_API_KEY": "test_key"}, clear=True):
+            # Should not raise
+            result = validate_environment()
+            assert result is True
+
+
+class TestRunBrowseaiJob:
+    """Tests for run_browseai_job function."""
+
+    @patch("src.browseai_runner.requests.post")
+    def test_successful_immediate_response(self, mock_post):
+        """Test successful Browse.ai job with immediate response (no polling)."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"data": [{"id": 1, "title": "Test"}]}
+        mock_post.return_value = mock_response
+
+        result = run_browseai_job("http://test.url", "test_key")
+        assert result == {"data": [{"id": 1, "title": "Test"}]}
+
+    @patch("src.browseai_runner.requests.post")
+    def test_request_error_raised(self, mock_post):
+        """Test that HTTP errors are raised."""
+        mock_response = MagicMock()
+        mock_response.raise_for_status.side_effect = Exception("HTTP Error")
+        mock_post.return_value = mock_response
+
+        with pytest.raises(Exception) as exc_info:
+            run_browseai_job("http://test.url", "test_key")
+        assert "HTTP Error" in str(exc_info.value)
+
+
+class TestRunFromEnv:
+    """Tests for run_from_env function."""
+
+    def test_missing_env_vars(self):
+        """Test that missing environment variables raise error."""
+        with patch.dict(os.environ, {}, clear=True):
+            with pytest.raises(EnvironmentError):
+                run_from_env()
+
+    @patch("src.browseai_runner.run_browseai_job")
+    def test_calls_run_browseai_job(self, mock_run):
+        """Test that run_from_env calls run_browseai_job with correct params."""
+        mock_run.return_value = {"data": []}
+        with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "http://test.url", "BROWSEAI_API_KEY": "test_key"}):
+            result = run_from_env(payload={"test": "data"}, timeout=100)
+            mock_run.assert_called_once_with(
+                run_url="http://test.url",
+                api_key="test_key",
+                payload={"test": "data"},
+                timeout=100,
+            )
