@@ -32,6 +32,7 @@ const plans = [
       "Up to 5 subreddits",
       "Priority support",
       "API access",
+      "7-day free trial",
     ],
     cta: "Start Free Trial",
     href: "/sign-up?plan=professional",

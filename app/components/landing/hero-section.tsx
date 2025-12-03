@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { ArrowRight, Sparkles, Users, CheckCircle2, Lock } from "lucide-react"
 
 export function HeroSection() {
   return (
@@ -11,46 +11,78 @@ export function HeroSection() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_60%,rgba(14,165,233,0.12),transparent)]" aria-hidden="true" />
       
       <div className="container px-4 sm:px-6">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-4xl text-center">
           {/* Badge */}
           <div className="mb-6 inline-flex items-center rounded-full border bg-muted px-3 sm:px-4 py-1.5 text-xs sm:text-sm">
-            <Sparkles className="mr-2 h-3 w-3 sm:h-4 sm:w-4 text-radar-500" aria-hidden="true" />
-            <span>Now in beta — Join 500+ founders on the waitlist</span>
+            <span className="mr-2">🚀</span>
+            <span>Join 500+ founders on the waitlist</span>
           </div>
 
           {/* Headline */}
-          <h1 id="hero-heading" className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-            Discover Reddit Pain Points.{" "}
+          <h1 id="hero-heading" className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight">
+            Find Profitable Problems in{" "}
             <span className="bg-gradient-to-r from-radar-600 to-radar-400 bg-clip-text text-transparent">
-              Build What People Need.
+              5 Minutes, Not 5 Weeks
             </span>
           </h1>
 
-          {/* Subheadline */}
-          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto px-2 sm:px-0">
-            Turn thousands of Reddit posts into a launch-ready SaaS idea in minutes. 
-            Find validated problems before you write a single line of code.
+          {/* Subheading with concrete numbers */}
+          <p className="mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl font-semibold text-foreground max-w-3xl mx-auto px-2 sm:px-0">
+            Discover 10-20 ranked pain points per scan
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="#waitlist">
-              <Button size="lg" className="w-full sm:w-auto text-base">
-                Join waitlist & get 3 free scans
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          {/* Benefit-focused description */}
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto px-2 sm:px-0">
+            Validate your SaaS idea before writing code. Stop guessing what to build—let Reddit users tell you what they actually need.
+          </p>
+
+          {/* Trust indicator */}
+          <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2 text-sm sm:text-base text-muted-foreground">
+            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-radar-500" aria-hidden="true" />
+            <span className="font-medium">Trusted by 500+ indie founders</span>
+          </div>
+
+          {/* CTAs - More prominent */}
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <Link href="#waitlist" className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 h-auto font-semibold shadow-lg hover:shadow-xl transition-all"
+              >
+                Start Free Scan
+                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
               </Button>
             </Link>
-            <Link href="/sample-report">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-base">
-                View sample report
+            <Link href="/sample-report" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full sm:w-auto text-base sm:text-lg px-8 sm:px-10 py-6 sm:py-7 h-auto font-semibold border-2"
+              >
+                View Sample Report
               </Button>
             </Link>
           </div>
 
-          {/* Social proof */}
-          <p className="mt-8 text-sm text-muted-foreground">
-            Trusted by indie hackers building on Reddit insights
-          </p>
+          {/* Additional trust indicators */}
+          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
+              <span>No credit card required</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
+              <span>Get results in minutes</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
+              <span>Export to CSV</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <span>Your data never shared</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
