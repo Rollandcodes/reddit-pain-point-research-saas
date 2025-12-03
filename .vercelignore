@@ -1,20 +1,27 @@
 # Ignore legacy Python code - not for Vercel deployment
 src/
-api/
-dashboard/
 backend/
 output/
+dashboard/
 
-# Other non-Next.js files
-*.py
-requirements*.txt
-fix_workflow.py
+# Netlify-specific files
 netlify.toml
 netlify/
 
-# Development files
-*.md
-!app/README.md
-.env*
+# Python files
+*.py
+requirements*.txt
 __pycache__/
 *.pyc
+
+# Development files
+.env*
+.env.local
+.env.example
+
+# Documentation (except app README)
+README.md
+README_*.md
+ONBOARDING*.md
+WORKFLOW*.md
+LICENSE
