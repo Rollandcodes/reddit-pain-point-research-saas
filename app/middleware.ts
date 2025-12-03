@@ -1,25 +1,24 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import { NextResponse } from "next/server"
 
 // Routes that require authentication
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
 ])
 
-// Routes that are always public
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/sample-report(.*)",
-  "/api/waitlist(.*)",
-  "/privacy(.*)",
-  "/terms(.*)",
-])
-
 export default clerkMiddleware(async (auth, req) => {
-  // Only protect dashboard routes, everything else is public
-  if (isProtectedRoute(req)) {
-    await auth.protect()
+  try {
+    // Only protect dashboard routes, everything else is public
+    if (isProtectedRoute(req)) {
+      await auth.protect()
+    }
+  } catch (error) {
+    console.error("Middleware error:", error)
+    // Don't block the request on middleware errors for public routes
+    if (!isProtectedRoute(req)) {
+      return NextResponse.next()
+    }
+    throw error
   }
 })
 
