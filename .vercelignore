@@ -1,0 +1,20 @@
+# Ignore legacy Python code - not for Vercel deployment
+src/
+api/
+dashboard/
+backend/
+output/
+
+# Other non-Next.js files
+*.py
+requirements*.txt
+fix_workflow.py
+netlify.toml
+netlify/
+
+# Development files
+*.md
+!app/README.md
+.env*
+__pycache__/
+*.pyc
