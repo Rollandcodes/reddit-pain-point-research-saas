@@ -207,6 +207,7 @@ MIT License - see the [LICENSE](LICENSE) file for details
 **Last Updated:** November 30, 2025
 
 ---
+<!-- Fixed Vercel deployment - set Root Directory to app -->
 
 *Helping entrepreneurs validate SaaS ideas through real user feedback from Reddit discussions.*
 
