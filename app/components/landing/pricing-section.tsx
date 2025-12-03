@@ -8,56 +8,35 @@ import Link from "next/link"
 
 const plans = [
   {
-    name: "Free",
-    price: "$0",
+    name: "Starter",
+    price: "$19",
     period: "/month",
-    description: "Perfect for trying out PainPointRadar",
+    description: "Perfect for getting started with pain point research",
     features: [
-      "3 scans per month",
-      "Basic pain point clustering",
+      "5 scans per day",
+      "Up to 3 subreddits",
       "CSV export",
-      "7-day data retention",
-      "Community support",
+      "7-day free trial",
     ],
-    cta: "Get Started Free",
-    href: "/sign-up",
+    cta: "Start Free Trial",
+    href: "/sign-up?plan=starter",
     highlighted: false,
   },
   {
-    name: "Pro",
-    price: "$15",
+    name: "Professional",
+    price: "$49",
     period: "/month",
-    description: "For serious indie hackers and founders",
+    description: "For serious founders and power users",
     features: [
-      "Unlimited scans",
-      "Priority processing queue",
-      "Advanced AI insights",
-      "Sentiment analysis",
-      "30-day data retention",
-      "Email support",
+      "15 scans per day",
+      "Up to 5 subreddits",
+      "Priority support",
+      "API access",
     ],
-    cta: "Start Pro Trial",
-    href: "/sign-up?plan=pro",
+    cta: "Start Free Trial",
+    href: "/sign-up?plan=professional",
     highlighted: true,
     badge: "Most Popular",
-  },
-  {
-    name: "Premium",
-    price: "$40",
-    period: "/month",
-    description: "For teams and power users",
-    features: [
-      "Everything in Pro",
-      "Custom dashboards",
-      "API access",
-      "Advanced filtering",
-      "Unlimited data retention",
-      "Priority support",
-      "Team collaboration",
-    ],
-    cta: "Contact Sales",
-    href: "/sign-up?plan=premium",
-    highlighted: false,
   },
 ]
 
@@ -74,7 +53,7 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.name} 

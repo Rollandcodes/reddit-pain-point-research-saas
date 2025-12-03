@@ -1,9 +1,13 @@
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { HeroSection } from "@/components/landing/hero-section"
+import { DemoVideoSection } from "@/components/landing/demo-video-section"
+import { TryItFreeWidget } from "@/components/landing/try-it-free-widget"
 import { WhoThisIsForSection } from "@/components/landing/who-this-is-for-section"
-import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { SamplePreviewSection } from "@/components/landing/sample-preview-section"
+import { ProductScreenshotsSection } from "@/components/landing/product-screenshots-section"
+import { TestimonialsSection } from "@/components/landing/testimonials-section"
+import { HowItWorksSection } from "@/components/landing/how-it-works-section"
 import { ComparisonSection } from "@/components/landing/comparison-section"
 import { WhyNowSection } from "@/components/landing/why-now-section"
 import { PricingSection } from "@/components/landing/pricing-section"
@@ -19,9 +23,13 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <TryItFreeWidget />
+        <DemoVideoSection />
         <TrustSection />
         <WhoThisIsForSection />
         <SamplePreviewSection />
+        <ProductScreenshotsSection />
+        <TestimonialsSection />
         <HowItWorksSection />
         <ComparisonSection />
         <WhyNowSection />
