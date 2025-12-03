@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Waitlist signups (pre-launch)
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      String   // "indie_founder" | "product_manager" | "agency" | "other"
+  useCase   String?  @db.Text
+  createdAt DateTime @default(now())
+  
+  @@index([email])
+  @@index([createdAt])
+}
+
+// Scan jobs created by users
+model ScanJob {
+  id                 String    @id @default(cuid())
+  userId             String    // Clerk user ID
+  keywords           String    // Comma-separated keywords
+  subreddits         String?   // Optional comma-separated subreddits
+  timeRange          String    @default("30") // Days: "7", "30", "90"
+  status             String    @default("queued") // "queued" | "running" | "completed" | "failed"
+  errorMessage       String?   @db.Text
+  totalPostsAnalyzed Int       @default(0)
+  totalClusters      Int       @default(0)
+  createdAt          DateTime  @default(now())
+  completedAt        DateTime?
+  
+  clusters           Cluster[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Pain point clusters from analysis
+model Cluster {
+  id               String   @id @default(cuid())
+  scanJobId        String
+  name             String   // Cluster label/name
+  description      String?  @db.Text // AI-generated summary
+  postCount        Int      @default(0)
+  averageSentiment Float    @default(0) // -1 to 1 scale
+  opportunityScore Int      @default(0) // 0-100 scale
+  createdAt        DateTime @default(now())
+  
+  scanJob          ScanJob          @relation(fields: [scanJobId], references: [id], onDelete: Cascade)
+  examples         ClusterExample[]
+  
+  @@index([scanJobId])
+  @@index([opportunityScore])
+}
+
+// Example quotes for each cluster
+model ClusterExample {
+  id            String   @id @default(cuid())
+  clusterId     String
+  sourceUrl     String?  // Reddit post/comment URL
+  quoteText     String   @db.Text
+  sentiment     Float    @default(0) // -1 to 1
+  createdAt     DateTime @default(now())
+  
+  cluster       Cluster  @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  
+  @@index([clusterId])
+}
+
+// Analytics events (simple logging)
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventName String   // "waitlist_signup", "scan_created", etc.
+  userId    String?  // Clerk user ID if logged in
+  metadata  Json?    // Additional event data
+  createdAt DateTime @default(now())
+  
+  @@index([eventName])
+  @@index([createdAt])
+}
