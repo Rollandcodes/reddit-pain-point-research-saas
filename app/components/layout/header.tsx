@@ -21,8 +21,11 @@ export function Header() {
           <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             How it works
           </Link>
-          <Link href="#who-its-for" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Who it&apos;s for
+          <Link href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Pricing
+          </Link>
+          <Link href="#faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            FAQ
           </Link>
           <Link href="/sample-report" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Sample Report
@@ -50,9 +53,10 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
           <nav className="container py-4 flex flex-col space-y-4" aria-label="Mobile navigation">
-            <Link href="#how-it-works" className="text-sm font-medium">How it works</Link>
-            <Link href="#who-its-for" className="text-sm font-medium">Who it&apos;s for</Link>
-            <Link href="/sample-report" className="text-sm font-medium">Sample Report</Link>
+            <Link href="#how-it-works" className="text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>How it works</Link>
+            <Link href="#pricing" className="text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
+            <Link href="#faq" className="text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+            <Link href="/sample-report" className="text-sm font-medium" onClick={() => setMobileMenuOpen(false)}>Sample Report</Link>
             <Link href="/sign-in"><Button variant="ghost" className="w-full">Sign in</Button></Link>
             <Link href="/sign-up"><Button className="w-full">Get Started</Button></Link>
           </nav>

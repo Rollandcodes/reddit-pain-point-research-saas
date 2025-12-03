@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
+import Script from "next/script"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -31,6 +32,15 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          {/* Plausible Analytics - privacy-friendly, GDPR compliant */}
+          <Script
+            defer
+            data-domain="reddit-pain-point-research-saas.vercel.app"
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        </head>
         <body className={inter.className}>
           {children}
         </body>
