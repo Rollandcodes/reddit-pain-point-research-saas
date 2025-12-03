@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PainPointRadar - Onboarding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --accent: #0066cc;
+            --accent-hover: #0052a3;
+            --text: #1a1a1a;
+            --text-muted: #666666;
+            --border: #e0e0e0;
+            --bg: #ffffff;
+            --bg-light: #f8f9fa;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 102, 204, 0.1) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .content {
+            padding: 2.5rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .step-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        input[type="email"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input[type="email"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .auth-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-btn {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-light);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .auth-btn:hover {
+            border-color: var(--accent);
+            background: white;
+        }
+
+        .auth-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .input-group input {
+            padding-right: 2.5rem;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-card {
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-card:hover {
+            border-color: var(--accent);
+            background: rgba(0, 102, 204, 0.02);
+        }
+
+        .option-card.selected {
+            border-color: var(--accent);
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .option-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .option-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .option-card .price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .subreddit-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .subreddit-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .subreddit-item:hover {
+            background: var(--bg-light);
+        }
+
+        .subreddit-item:last-child {
+            border-bottom: none;
+        }
+
+        .progress-container {
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(
+                var(--success) 0deg,
+                var(--success) 360deg
+            );
+            border-radius: 50%;
+            opacity: 0;
+            animation: progressAnim 3s ease-out forwards;
+        }
+
+        @keyframes progressAnim {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .progress-circle .percentage {
+            position: relative;
+            z-index: 1;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .progress-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-status {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--accent);
+        }
+
+        .step-counter {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        .error-message {
+            background: #fee;
+            color: var(--error);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .auth-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 PainPointRadar</h1>
+            <p>Find real pain points. Build better SaaS.</p>
+            <div class="progress-bar">
+                <div class="progress-dot active" id="dot-1"></div>
+                <div class="progress-dot" id="dot-2"></div>
+                <div class="progress-dot" id="dot-3"></div>
+                <div class="progress-dot" id="dot-4"></div>
+                <div class="progress-dot" id="dot-5"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Authentication -->
+            <div class="step active" id="step-1">
+                <h2 class="step-title">Step 1: Create Account</h2>
+                <p class="step-subtitle">Choose how you'd like to sign up. It takes just a few seconds.</p>
+                
+                <div class="error-message" id="error-1"></div>
+
+                <div class="auth-buttons">
+                    <button class="auth-btn" onclick="setAuthMethod('email')">
+                        ✉️ Email
+                    </button>
+                    <button class="auth-btn" onclick="setAuthMethod('github')">
+                        🐙 GitHub
+                    </button>
+                </div>
+
+                <div id="email-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-group">
+                            <input type="email" id="email" placeholder="you@example.com">
+                            <span class="icon">📧</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="text" id="password" placeholder="Create a secure password">
+                    </div>
+                </div>
+
+                <div id="github-form" style="display: none;">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        You'll be redirected to GitHub to authenticate securely.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2: Choose Input Method -->
+            <div class="step" id="step-2">
+                <h2 class="step-title">Step 2: What to Search?</h2>
+                <p class="step-subtitle">Enter a keyword or select from popular subreddits.</p>
+
+                <div class="error-message" id="error-2"></div>
+
+                <div class="form-group">
+                    <label for="keyword">Search Keyword</label>
+                    <input type="text" id="keyword" placeholder="e.g., CRM, student budgeting, remote work">
+                </div>
+
+                <div class="form-group">
+                    <label for="subreddit">Or Select a Subreddit</label>
+                    <select id="subreddit" onchange="updateSubredditSelection()">
+                        <option value="">-- Choose subreddit --</option>
+                        <option value="SaaS">SaaS</option>
+                        <option value="startups">startups</option>
+                        <option value="Entrepreneur">Entrepreneur</option>
+                        <option value="webdev">webdev</option>
+                        <option value="business">business</option>
+                        <option value="freelance">freelance</option>
+                        <option value="productivity">productivity</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Step 3: Scan Type Selection -->
+            <div class="step" id="step-3">
+                <h2 class="step-title">Step 3: Choose Your Scan</h2>
+                <p class="step-subtitle">Pick the depth of analysis you need.</p>
+
+                <div class="error-message" id="error-3"></div>
+
+                <div class="option-grid">
+                    <div class="option-card" onclick="setScanType('light')">
+                        <h3>⚡ Light Scan</h3>
+                        <p>Quick insights from top posts</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">~50 posts analyzed</p>
+                        <div class="price">FREE</div>
+                        <p style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--success);">✓ Limited daily scans</p>
+                    </div>
+                    <div class="option-card" onclick="setScanType('deep')">
+                        <h3>🔍 Deep Scan</h3>
+                        <p>Comprehensive market analysis</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">~500+ posts analyzed</p>
+                        <div class="price">$9</div>
+                        <p style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--accent);">✓ Unlimited scans</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Progress -->
+            <div class="step" id="step-4">
+                <div class="progress-container">
+                    <div class="progress-circle">
+                        <div class="percentage" id="progress-percentage">0%</div>
+                    </div>
+                    <div class="progress-text">Scanning Reddit...</div>
+                    <div class="progress-status" id="progress-status">Fetching posts...</div>
+                </div>
+            </div>
+
+            <!-- Step 5: Download Report -->
+            <div class="step" id="step-5">
+                <h2 class="step-title">✓ Scan Complete!</h2>
+                <p class="step-subtitle">Your pain-point report is ready. Download and share with your team.</p>
+
+                <div class="error-message" id="error-5"></div>
+
+                <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">📊 Available Formats:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="downloadFile('csv')" style="flex: unset;">📥 CSV</button>
+                        <button class="btn btn-primary" onclick="downloadFile('xlsx')" style="flex: unset;">📥 Excel</button>
+                    </div>
+                    <button class="btn btn-primary" onclick="downloadFile('html')" style="margin-top: 1rem;">📥 HTML Report</button>
+                </div>
+
+                <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+                    <strong>Key Findings:</strong><br>
+                    248 posts analyzed • 42 pain points identified • 87% sentiment match
+                </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group" id="buttons">
+                <button class="btn btn-secondary" onclick="previousStep()" id="prev-btn" style="display: none;">← Back</button>
+                <button class="btn btn-primary" onclick="nextStep()" id="next-btn">Continue →</button>
+            </div>
+
+            <div class="step-counter">
+                <span id="step-number">Step 1</span> of 5
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let currentStep = 1;
+        let formData = {
+            authMethod: null,
+            email: null,
+            keyword: null,
+            subreddit: null,
+            scanType: null
+        };
+        let scanResults = null;
+
+        // Update progress bar
+        function updateProgress() {
+            for (let i = 1; i <= 5; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < currentStep) {
+                    dot.classList.add('completed');
+                    dot.classList.remove('active');
+                } else if (i === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else {
+                    dot.classList.remove('active', 'completed');
+                }
+            }
+        }
+
+        // Show/hide steps
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            document.getElementById('step-number').textContent = `Step ${step}`;
+            
+            // Update buttons visibility
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (step === 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.textContent = 'Continue →';
+            } else if (step === 5) {
+                prevBtn.style.display = 'block';
+                nextBtn.textContent = 'New Scan';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.textContent = 'Continue →';
+            }
+
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setAuthMethod(method) {
+            formData.authMethod = method;
+            document.querySelectorAll('.auth-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (method === 'email') {
+                document.getElementById('email-form').style.display = 'block';
+                document.getElementById('github-form').style.display = 'none';
+            } else {
+                document.getElementById('email-form').style.display = 'none';
+                document.getElementById('github-form').style.display = 'block';
+            }
+        }
+
+        function updateSubredditSelection() {
+            const subreddit = document.getElementById('subreddit').value;
+            if (subreddit) {
+                document.getElementById('keyword').value = '';
+                formData.subreddit = subreddit;
+                formData.keyword = null;
+            }
+        }
+
+        function setScanType(type) {
+            formData.scanType = type;
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        function validateStep(step) {
+            const errorDiv = document.getElementById(`error-${step}`);
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            switch(step) {
+                case 1:
+                    if (!formData.authMethod) {
+                        errorDiv.textContent = '⚠️ Please choose an authentication method';
+                        errorDiv.classList.add('show');
+                        return false;
+                    }
+                    if (formData.authMethod === 'email') {
+                        const email = document.getElementById('email').value;
+                        if (!email || !email.includes('@')) {
+                            errorDiv.textContent = '⚠️ Please enter a valid email';
+                            errorDiv.classList.add('show');
+                            return false;
+                        }
+                        formData.email = email;
+                    }
+                    return true;
+                case 2:
+                    const keyword = document.getElementById('keyword').value.trim();
+                    const subreddit = document.getElementById('subreddit').value;
+                    if (!keyword && !subreddit) {
+                        errorDiv.textContent = '⚠️ Enter a keyword or select a subreddit';
+                        errorDiv.classList.add('show');
+                        return false;
+                    }
+                    if (keyword) {
+                        formData.keyword = keyword;
+                        formData.subreddit = null;
+                    }
+                    return true;
+                case 3:
+                    if (!formData.scanType) {
+                        errorDiv.textContent = '⚠️ Please choose a scan type';
+                        errorDiv.classList.add('show');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        function nextStep() {
+            if (!validateStep(currentStep)) return;
+
+            if (currentStep === 3) {
+                currentStep = 4;
+                showStep(currentStep);
+                simulateProgress();
+            } else if (currentStep === 4) {
+                // Auto-advance to step 5 after progress completes
+                return;
+            } else if (currentStep === 5) {
+                // New scan
+                currentStep = 1;
+                formData = {
+                    authMethod: null,
+                    email: null,
+                    keyword: null,
+                    subreddit: null,
+                    scanType: null
+                };
+                document.getElementById('keyword').value = '';
+                document.getElementById('subreddit').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                showStep(currentStep);
+            } else {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        async function runAnalysis() {
+            let progress = 0;
+            const statuses = [
+                'Connecting to API...',
+                'Fetching demo data...',
+                'Analyzing sentiment...',
+                'Calculating pain scores...',
+                'Generating solutions...',
+                'Finalizing report...'
+            ];
+            let statusIndex = 0;
+
+            // Update progress UI
+            const updateUI = () => {
+                document.getElementById('progress-percentage').textContent = Math.round(progress) + '%';
+                document.getElementById('progress-status').textContent = statuses[Math.min(statusIndex, statuses.length - 1)];
+            };
+
+            try {
+                // Start progress animation
+                const progressInterval = setInterval(() => {
+                    if (progress < 30) {
+                        progress += 5;
+                        statusIndex = 0;
+                    }
+                    updateUI();
+                }, 200);
+
+                // Call the backend API
+                const response = await fetch(CONFIG.getUrl(CONFIG.ENDPOINTS.DEMO));
+                
+                clearInterval(progressInterval);
+                progress = 50;
+                statusIndex = 2;
+                updateUI();
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                scanResults = data;
+
+                // Animate remaining progress
+                const finishInterval = setInterval(() => {
+                    progress += 10;
+                    statusIndex = Math.floor(progress / 20);
+                    updateUI();
+                    
+                    if (progress >= 100) {
+                        clearInterval(finishInterval);
+                        document.getElementById('progress-percentage').textContent = '100%';
+                        document.getElementById('progress-status').textContent = 'Complete!';
+                        
+                        // Update results summary
+                        updateResultsSummary(data);
+                        
+                        setTimeout(() => {
+                            currentStep = 5;
+                            showStep(currentStep);
+                        }, 800);
+                    }
+                }, 150);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                document.getElementById('progress-status').textContent = 'Using demo data...';
+                
+                // Fall back to demo mode
+                setTimeout(() => {
+                    scanResults = {
+                        success: true,
+                        count: 3,
+                        pain_points: [
+                            { pain_summary: 'Pricing issues', category: 'Pricing', pain_score: 85 },
+                            { pain_summary: 'Bug reports', category: 'Bugs', pain_score: 72 },
+                            { pain_summary: 'Feature requests', category: 'Feature', pain_score: 65 }
+                        ]
+                    };
+                    document.getElementById('progress-percentage').textContent = '100%';
+                    document.getElementById('progress-status').textContent = 'Demo complete!';
+                    
+                    setTimeout(() => {
+                        currentStep = 5;
+                        showStep(currentStep);
+                    }, 800);
+                }, 1500);
+            }
+        }
+
+        function updateResultsSummary(data) {
+            if (data && data.count) {
+                const summaryEl = document.querySelector('#step-5 p:last-of-type');
+                if (summaryEl) {
+                    const avgScore = data.pain_points 
+                        ? Math.round(data.pain_points.reduce((a, b) => a + (b.pain_score || 0), 0) / data.pain_points.length)
+                        : 0;
+                    summaryEl.innerHTML = `<strong>Key Findings:</strong><br>
+                        ${data.count} posts analyzed • ${data.pain_points?.length || 0} pain points identified • ${avgScore}% avg pain score`;
+                }
+            }
+        }
+
+        function simulateProgress() {
+            runAnalysis();
+        }
+
+        function downloadFile(format) {
+            // In production, these would be real file downloads from the backend
+            const backendUrl = CONFIG.BACKEND_URL;
+            
+            if (scanResults && scanResults.pain_points) {
+                // Create downloadable content from scan results
+                let content, filename, mimeType;
+                
+                if (format === 'csv') {
+                    const headers = ['pain_summary', 'category', 'pain_score', 'severity_rating'];
+                    const rows = scanResults.pain_points.map(p => 
+                        headers.map(h => `"${(p[h] || '').toString().replace(/"/g, '""')}"`).join(',')
+                    );
+                    content = [headers.join(','), ...rows].join('\n');
+                    filename = 'painpoint_report.csv';
+                    mimeType = 'text/csv';
+                } else if (format === 'html') {
+                    content = `<!DOCTYPE html>
+<html><head><title>PainPointRadar Report</title>
+<style>body{font-family:sans-serif;padding:2rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#0066cc;color:white}</style></head>
+<body><h1>PainPointRadar Report</h1>
+<p>Generated: ${new Date().toLocaleString()}</p>
+<table><tr><th>Pain Point</th><th>Category</th><th>Score</th></tr>
+${scanResults.pain_points.map(p => `<tr><td>${p.pain_summary || ''}</td><td>${p.category || ''}</td><td>${p.pain_score || ''}</td></tr>`).join('')}
+</table></body></html>`;
+                    filename = 'painpoint_report.html';
+                    mimeType = 'text/html';
+                } else {
+                    alert('Excel export requires backend. Please use CSV for now.');
+                    return;
+                }
+                
+                // Create and trigger download
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } else {
+                alert(`No scan results available. Please run a scan first.`);
+            }
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
