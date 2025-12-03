@@ -8,8 +8,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <Radar className="h-6 w-6 text-radar-600" />
+            <Link href="/" className="flex items-center space-x-2 mb-4" aria-label="PainPointRadar Home">
+              <Radar className="h-6 w-6 text-radar-600" aria-hidden="true" />
               <span className="text-xl font-bold">PainPointRadar</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-md">

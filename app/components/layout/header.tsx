@@ -11,13 +11,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container px-4 sm:px-6 flex h-14 sm:h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <Radar className="h-6 w-6 text-radar-600" />
+        <Link href="/" className="flex items-center space-x-2" aria-label="PainPointRadar Home">
+          <Radar className="h-6 w-6 text-radar-600" aria-hidden="true" />
           <span className="text-xl font-bold">PainPointRadar</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-6" aria-label="Main navigation">
           <Link href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             How it works
           </Link>
@@ -39,15 +39,17 @@ export function Header() {
         <button
           className="md:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
         </button>
       </div>
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
-          <nav className="container py-4 flex flex-col space-y-4">
+          <nav className="container py-4 flex flex-col space-y-4" aria-label="Mobile navigation">
             <Link href="#how-it-works" className="text-sm font-medium">How it works</Link>
             <Link href="#who-its-for" className="text-sm font-medium">Who it&apos;s for</Link>
             <Link href="/sample-report" className="text-sm font-medium">Sample Report</Link>
