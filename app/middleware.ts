@@ -1,7 +1,10 @@
-import { clerkMiddleware } from "@clerk/nextjs/server"
+// Temporarily disabled middleware to test deployment
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-// Make all routes public to test if Clerk is working
-export default clerkMiddleware()
+export function middleware(request: NextRequest) {
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
