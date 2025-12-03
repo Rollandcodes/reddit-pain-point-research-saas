@@ -30,3 +30,9 @@ const CONFIG = {
 // Freeze to prevent modifications
 Object.freeze(CONFIG);
 Object.freeze(CONFIG.ENDPOINTS);
+
+// Pre-warm the backend when the page loads
+if (window.location.hostname !== 'localhost') {
+  fetch(CONFIG.getUrl(CONFIG.ENDPOINTS.HEALTH))
+    .catch(() => {}); // Silently ignore errors
+}
