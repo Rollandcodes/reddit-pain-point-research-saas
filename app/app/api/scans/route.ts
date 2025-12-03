@@ -104,8 +104,22 @@ export async function POST(request: Request) {
       hasSubreddits: !!subreddits,
     })
 
-    // TODO: Trigger background job to process scan
-    // For now, we'll process synchronously in a separate endpoint
+    // Enqueue background job to process scan
+    try {
+      const { enqueueScanJob } = await import("@/lib/queue")
+      await enqueueScanJob({
+        scanId: scanJob.id,
+        userId,
+        keywords,
+        subreddits: subreddits || undefined,
+        timeRange,
+      })
+      console.log(`[API] Enqueued scan job: ${scanJob.id}`)
+    } catch (error) {
+      console.error("[API] Failed to enqueue scan job:", error)
+      // Don't fail the request if queue is unavailable
+      // The scan will remain in "queued" status and can be processed later
+    }
 
     return NextResponse.json(
       { success: true, scanId: scanJob.id },

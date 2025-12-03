@@ -1,10 +1,12 @@
 /**
  * Cluster Engine - Groups similar pain points together
  * Uses keyword similarity and basic NLP for clustering
- * Designed to be pluggable for future LLM-based clustering
+ * Enhanced with AI for better descriptions and analysis
  */
 
 import type { RedditPost, RedditComment } from "./reddit-client"
+import { isAIAvailable, generateClusterName, generateClusterDescription } from "./ai"
+import { config } from "./config"
 
 interface TextItem {
   id: string
@@ -212,9 +214,20 @@ function clusterByKeywords(
 
 /**
  * Generate a descriptive name for a cluster
+ * Uses AI if available, otherwise falls back to keyword extraction
  */
-function generateClusterName(items: TextItem[]): string {
-  // Combine all text and extract top keywords
+async function generateClusterNameHelper(items: TextItem[]): Promise<string> {
+  // Try AI if available
+  if (config.ai.enabled && isAIAvailable()) {
+    try {
+      const { generateClusterName: aiGenerateClusterName } = await import("./ai")
+      return await aiGenerateClusterName(items.map(i => ({ text: i.text, score: i.score })))
+    } catch (error) {
+      console.warn("AI cluster name generation failed, using fallback:", error)
+    }
+  }
+
+  // Fallback to keyword extraction
   const combinedText = items.map(i => i.text).join(" ")
   const keywords = extractKeywords(combinedText).slice(0, 3)
   
@@ -228,12 +241,29 @@ function generateClusterName(items: TextItem[]): string {
 
 /**
  * Generate a description for a cluster
+ * Uses AI if available, otherwise falls back to basic description
  */
-function generateClusterDescription(items: TextItem[]): string {
+async function generateClusterDescription(
+  clusterName: string,
+  items: TextItem[]
+): Promise<string> {
+  // Try AI if available
+  if (config.ai.enabled && isAIAvailable()) {
+    try {
+      return await generateClusterDescription(
+        clusterName,
+        items.map(i => ({ text: i.text, score: i.score, sourceUrl: i.sourceUrl }))
+      )
+    } catch (error) {
+      console.warn("AI cluster description generation failed, using fallback:", error)
+    }
+  }
+
+  // Fallback to basic description
   const itemCount = items.length
   const avgScore = items.reduce((sum, i) => sum + i.score, 0) / itemCount
   
-  return `${itemCount} related discussions with an average engagement score of ${Math.round(avgScore)}. Users are discussing issues and experiences related to this topic.`
+  return `${itemCount} related discussions with an average engagement score of ${Math.round(avgScore)}. Users are discussing issues and experiences related to ${clusterName}.`
 }
 
 /**
@@ -286,9 +316,13 @@ export async function clusterPainPoints(
     const sentiments = items.map(i => calculateSentiment(i.text))
     const avgSentiment = sentiments.reduce((a, b) => a + b, 0) / sentiments.length
 
+    // Generate name and description (with AI if available)
+    const name = await generateClusterNameHelper(items)
+    const description = await generateClusterDescription(name, items)
+
     clusters.push({
-      name: generateClusterName(items),
-      description: generateClusterDescription(items),
+      name,
+      description,
       items,
       sentiment: avgSentiment,
       opportunityScore: calculateOpportunityScore(items, avgSentiment),

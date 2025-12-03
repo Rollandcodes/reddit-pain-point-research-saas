@@ -31,6 +31,22 @@ export const config = {
   appUrl: getEnvVar('NEXT_PUBLIC_APP_URL', false) || 'http://localhost:3000',
   nodeEnv: process.env.NODE_ENV || 'development',
   
+  // Redis (for job queue)
+  redis: {
+    host: getEnvVar('REDIS_HOST', false) || 'localhost',
+    port: parseInt(getEnvVar('REDIS_PORT', false) || '6379', 10),
+    password: getEnvVar('REDIS_PASSWORD', false),
+  },
+  
+  // AI Configuration
+  ai: {
+    provider: (getEnvVar('AI_PROVIDER', false) || 'auto') as 'openai' | 'claude' | 'auto',
+    openaiApiKey: getEnvVar('OPENAI_API_KEY', false),
+    anthropicApiKey: getEnvVar('ANTHROPIC_API_KEY', false),
+    model: getEnvVar('AI_MODEL', false),
+    enabled: !!(getEnvVar('OPENAI_API_KEY', false) || getEnvVar('ANTHROPIC_API_KEY', false)),
+  },
+  
   // Feature flags
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',

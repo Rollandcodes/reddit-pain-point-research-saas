@@ -125,6 +125,12 @@ const defaultPainPoints = [
     quote: "Every tool forces me to work their way. I wish I could customize workflows to match how my team actually works.",
     mentions: 154,
   },
+  {
+    title: "Poor mobile experience",
+    severity: 65,
+    quote: "The mobile app is basically unusable. I need to access this on the go, but the mobile version is so limited.",
+    mentions: 142,
+  },
 ]
 
 export function FreeScanWidget() {
@@ -311,4 +317,3 @@ export function FreeScanWidget() {
     </section>
   )
 }
-
