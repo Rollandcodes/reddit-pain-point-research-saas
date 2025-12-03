@@ -3,8 +3,8 @@ import { WaitlistForm } from "./waitlist-form"
 
 export function WaitlistSection() {
   return (
-    <section id="waitlist" className="py-20 bg-gradient-to-b from-background to-muted/50">
-      <div className="container">
+    <section id="waitlist" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-background to-muted/50">
+      <div className="container px-4 sm:px-6">
         <div className="max-w-md mx-auto">
           <Card className="border-2">
             <CardHeader className="text-center">

@@ -4,10 +4,10 @@ import { Radar } from "lucide-react"
 export function Footer() {
   return (
     <footer className="border-t bg-muted/50">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="col-span-2 md:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <Radar className="h-6 w-6 text-radar-600" />
               <span className="text-xl font-bold">PainPointRadar</span>
