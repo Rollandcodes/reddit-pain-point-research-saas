@@ -6,8 +6,7 @@
   publish = "dashboard/"
   
   # No build command needed for static HTML
-  # If you add a frontend framework later, use:
-  # command = "npm run build"
+  command = "echo 'Static site - no build needed'"
 
 [build.environment]
   # Environment variables for build time
