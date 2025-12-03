@@ -115,7 +115,7 @@ class RedditClient {
     this.accessToken = data.access_token
     this.tokenExpiry = Date.now() + (data.expires_in * 1000) - 60000 // Refresh 1 min early
     
-    return this.accessToken
+    return this.accessToken!
   }
 
   private async request<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
