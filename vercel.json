@@ -3,6 +3,8 @@
   "version": 2,
   "framework": "nextjs",
   "rootDirectory": "app",
+  "buildCommand": "npx prisma generate && next build",
+  "installCommand": "npm install",
   "regions": ["iad1"],
   "build": {
     "env": {
