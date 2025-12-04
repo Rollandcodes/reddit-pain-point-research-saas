@@ -36,7 +36,7 @@ export default function RootLayout({
           {/* Plausible Analytics - privacy-friendly, GDPR compliant */}
           <Script
             defer
-            data-domain="reddit-pain-point-research-saas.vercel.app"
+            data-domain="painpointradar.me"
             src="https://plausible.io/js/script.js"
             strategy="afterInteractive"
           />
