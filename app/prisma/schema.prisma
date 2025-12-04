@@ -10,6 +10,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User accounts linked to Clerk
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique // Clerk user ID
+  email     String   @unique
+  name      String?
+  role      String   @default("user") // "user" | "admin"
+  status    String   @default("active") // "active" | "inactive" | "suspended"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastActive DateTime?
+  
+  scanJobs  ScanJob[]
+  
+  @@index([clerkId])
+  @@index([status])
+  @@index([role])
+  @@index([lastActive])
+}
+
 // Waitlist signups (pre-launch)
 model WaitlistSignup {
   id        String   @id @default(cuid())
@@ -25,22 +45,26 @@ model WaitlistSignup {
 // Scan jobs created by users
 model ScanJob {
   id                 String    @id @default(cuid())
-  userId             String    // Clerk user ID
+  userId             String    // Foreign key to User
   keywords           String    // Comma-separated keywords
   subreddits         String?   // Optional comma-separated subreddits
   timeRange          String    @default("30") // Days: "7", "30", "90"
-  status             String    @default("queued") // "queued" | "running" | "completed" | "failed"
+  status             String    @default("queued") // "queued" | "running" | "completed" | "failed" | "cancelled"
   errorMessage       String?   @db.Text
   totalPostsAnalyzed Int       @default(0)
   totalClusters      Int       @default(0)
+  duration           Int?      // Duration in seconds
   createdAt          DateTime  @default(now())
   completedAt        DateTime?
+  updatedAt          DateTime  @updatedAt
   
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   clusters           Cluster[]
   
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+  @@index([completedAt])
 }
 
 // Pain point clusters from analysis

@@ -39,6 +39,7 @@
     "react-dom": "^18.3.1",
     "snoowrap": "^1.23.0",
     "stripe": "^20.0.0",
+    "svix": "^1.82.0",
     "tailwind-merge": "^2.5.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.0"
