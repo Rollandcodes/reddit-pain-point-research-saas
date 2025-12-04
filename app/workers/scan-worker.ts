@@ -9,6 +9,9 @@ import type { ScanJobData } from "@/lib/queue"
 import { prisma } from "@/lib/db"
 import { redditClient } from "@/lib/reddit-client"
 import { clusterPainPoints } from "@/lib/cluster-engine"
+import { sendScanCompleteEmail, sendScanFailedEmail } from "@/lib/email"
+import { clerkClient } from "@clerk/nextjs/server"
+import { config } from "@/lib/config"
 
 // Worker options
 const workerOptions = {
@@ -126,6 +129,29 @@ const worker = new Worker<ScanJobData>(
 
       console.log(`[Worker] Scan ${scanId} completed successfully`)
 
+      // Send completion email notification
+      try {
+        const scan = await prisma.scanJob.findUnique({ where: { id: scanId } })
+        if (scan?.userId) {
+          const user = await clerkClient.users.getUser(scan.userId)
+          const userEmail = user.emailAddresses[0]?.emailAddress
+          
+          if (userEmail) {
+            await sendScanCompleteEmail(userEmail, {
+              userName: user.firstName || 'there',
+              scanId: scan.id,
+              subreddit: subredditList?.[0] || 'multiple subreddits',
+              painPointsFound: clusters.length,
+              viewUrl: `${config.appUrl}/dashboard/scans/${scan.id}`,
+            })
+            console.log(`[Worker] Sent completion email to ${userEmail}`)
+          }
+        }
+      } catch (emailError) {
+        console.error('[Worker] Failed to send completion email:', emailError)
+        // Don't fail the job if email fails
+      }
+
       return {
         success: true,
         scanId,
@@ -136,15 +162,39 @@ const worker = new Worker<ScanJobData>(
     } catch (error) {
       console.error(`[Worker] Error processing scan ${scanId}:`, error)
 
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
+
       // Update scan job with error
       await prisma.scanJob.update({
         where: { id: scanId },
         data: {
           status: "failed",
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error occurred",
+          errorMessage,
         },
       })
+
+      // Send failure email notification
+      try {
+        const scan = await prisma.scanJob.findUnique({ where: { id: scanId } })
+        if (scan?.userId) {
+          const user = await clerkClient.users.getUser(scan.userId)
+          const userEmail = user.emailAddresses[0]?.emailAddress
+          
+          if (userEmail) {
+            await sendScanFailedEmail(userEmail, {
+              userName: user.firstName || 'there',
+              scanId: scan.id,
+              subreddit: subreddits || 'unknown',
+              errorMessage,
+              supportUrl: `${config.appUrl}/support`,
+            })
+            console.log(`[Worker] Sent failure email to ${userEmail}`)
+          }
+        }
+      } catch (emailError) {
+        console.error('[Worker] Failed to send failure email:', emailError)
+        // Don't fail the job if email fails
+      }
 
       // Re-throw to mark job as failed
       throw error

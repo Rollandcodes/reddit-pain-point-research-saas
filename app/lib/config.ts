@@ -47,6 +47,13 @@ export const config = {
     enabled: !!(getEnvVar('OPENAI_API_KEY', false) || getEnvVar('ANTHROPIC_API_KEY', false)),
   },
   
+  // Email Configuration (Resend)
+  email: {
+    resendApiKey: getEnvVar('RESEND_API_KEY', false),
+    fromAddress: getEnvVar('EMAIL_FROM_ADDRESS', false) || 'PainPointRadar <noreply@painpointradar.com>',
+    enabled: !!getEnvVar('RESEND_API_KEY', false),
+  },
+  
   // Feature flags
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 import { stripe, verifyWebhookSignature } from "@/lib/stripe"
 import { prisma } from "@/lib/db"
+import { sendPaymentSuccessEmail } from "@/lib/email"
+import { clerkClient } from "@clerk/nextjs/server"
 import type Stripe from "stripe"
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -104,6 +106,31 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       },
     },
   })
+
+    // Send payment success email
+    try {
+      const user = await clerkClient.users.getUser(userId)
+      const userEmail = user.emailAddresses[0]?.emailAddress
+
+      if (userEmail && subscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId as string)
+        const planName = session.metadata?.planName || subscription.items.data[0]?.price.nickname || 'Pro Plan'
+        const amount = session.amount_total || 0
+        const nextBillingDate = new Date((subscription.current_period_end || 0) * 1000).toLocaleDateString()
+
+        await sendPaymentSuccessEmail(userEmail, {
+          userName: user.firstName || 'there',
+          planName,
+          amount,
+          nextBillingDate,
+        })
+
+        console.log(`✅ Payment confirmation email sent to ${userEmail}`)
+      }
+    } catch (emailError) {
+      console.error('❌ Failed to send payment confirmation email:', emailError)
+      // Don't fail the webhook if email fails
+    }
 }
 
 async function handleSubscriptionChange(subscription: Stripe.Subscription) {
