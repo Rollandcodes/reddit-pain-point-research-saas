@@ -53,3 +53,34 @@ def test_estimate_revenue_potential_target_audience_scales_with_severity():
     assert rec4["estimated_target_audience"] == int(500000 * 0.5)
     assert rec3["estimated_target_audience"] == int(500000 * 0.3)
     assert rec2["estimated_target_audience"] == int(500000 * 0.1)
+
+
+def test_estimate_revenue_potential_low_score_pricing():
+    # Test low revenue score path (lines 46-47: else branch for revenue_score < 50)
+    # With pain_score=20, competition=High (0.6 multiplier), we need low market_score
+    rec = estimate_revenue_potential([{
+        "pain_score": 20,
+        "competition_level": "High",
+        "severity_rating": 1,
+        "subreddit": "ProductManagement",
+    }])[0]
+    # revenue_score should be < 50, triggering else branch
+    assert rec["revenue_potential_score"] < 50
+    assert rec["recommended_pricing"] == "$49/mo"
+    assert "estimated_arr_potential" in rec
+
+
+def test_estimate_revenue_potential_high_score_pricing():
+    # Test high revenue score path (lines 40-41: revenue_score >= 75)
+    # Need market_score * competition_multiplier >= 75
+    # market_score = (pain * 0.4) + (min(audience/10000, 100) * 0.3) + (severity * 5 * 0.2)
+    # Max: (100 * 0.4) + (100 * 0.3) + (5 * 5 * 0.2) = 40 + 30 + 5 = 75
+    rec = estimate_revenue_potential([{
+        "pain_score": 100,
+        "competition_level": "Low",
+        "severity_rating": 5,
+        "subreddit": "startups",  # audience = 1000000
+    }])[0]
+    # Should trigger revenue_score >= 75 branch
+    assert rec["revenue_potential_score"] >= 75
+    assert rec["recommended_pricing"] == "$199/mo"

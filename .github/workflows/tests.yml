@@ -26,9 +26,15 @@ jobs:
       - name: Run tests with coverage (enforced)
         run: |
           python -m pytest -q
-      - name: Upload coverage report artifact
+      - name: Upload coverage data artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
+          name: coverage-data
           path: ./.coverage
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-report
+          path: ./htmlcov
