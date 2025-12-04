@@ -64,3 +64,36 @@ def test_push_to_sheets_with_injected_client_updates_values():
     recs = [{"a": 1, "b": "x"}]
     url = push_to_sheets(recs, spreadsheet_name="X", worksheet_name="Y", gspread_client=fake_client, credentials_factory=lambda: None)
     assert url == "https://fake.url"
+
+
+def test_push_to_sheets_existing_worksheet_path():
+    class FakeWorksheet:
+        def __init__(self):
+            self.cleared = False
+            self.updated = None
+        def clear(self):
+            self.cleared = True
+        def update(self, values):
+            self.updated = values
+
+    class FakeSpreadsheet:
+        def __init__(self):
+            self.url = "https://fake.url"
+            self.ws = FakeWorksheet()
+        def worksheet(self, name):
+            return self.ws
+        def add_worksheet(self, *args, **kwargs):
+            raise AssertionError("should not add worksheet when existing")
+
+    class FakeClient:
+        def __init__(self):
+            self.spreadsheet = FakeSpreadsheet()
+        def open(self, name):
+            return self.spreadsheet
+        def create(self, name):
+            raise AssertionError("should not create when open succeeds")
+
+    fake_client = FakeClient()
+    recs = [{"a": 1, "b": "x"}]
+    url = push_to_sheets(recs, spreadsheet_name="X", worksheet_name="Y", gspread_client=fake_client, credentials_factory=lambda: None)
+    assert url == "https://fake.url"

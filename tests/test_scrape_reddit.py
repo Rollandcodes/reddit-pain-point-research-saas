@@ -41,3 +41,11 @@ def test_get_submissions_keyword_filtering():
         out = get_submissions(["SaaS"], keywords=["keyword"], limit_per_sub=2)
         assert len(out) == 1
         assert out[0]["title"] == "Beta"
+
+
+def test_get_submissions_handles_fetch_exception():
+    # Simulate requests.get raising to cover exception path
+    with patch("src.scrape_reddit.requests.get", side_effect=Exception("network")):
+        out = get_submissions(["SaaS"], keywords=None, limit_per_sub=1)
+        assert isinstance(out, list)
+        assert len(out) == 0
