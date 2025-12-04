@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import { redirect, notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import Link from "next/link"

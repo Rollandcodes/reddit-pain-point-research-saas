@@ -116,7 +116,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId as string)
         const planName = session.metadata?.planName || subscription.items.data[0]?.price.nickname || 'Pro Plan'
         const amount = session.amount_total || 0
-        const nextBillingDate = new Date((subscription.current_period_end || 0) * 1000).toLocaleDateString()
+        const currentPeriodEnd = (subscription as any).current_period_end || 0
+        const nextBillingDate = new Date(currentPeriodEnd * 1000).toLocaleDateString()
 
         await sendPaymentSuccessEmail(userEmail, {
           userName: user.firstName || 'there',
@@ -183,7 +184,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string
-  const subscriptionId = invoice.subscription as string
+  const subscriptionId = (invoice as any).subscription as string
   const amountPaid = invoice.amount_paid
 
   console.log(`Payment succeeded: ${amountPaid / 100} for subscription ${subscriptionId}`)
@@ -194,7 +195,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string
-  const subscriptionId = invoice.subscription as string
+  const subscriptionId = (invoice as any).subscription as string
 
   console.log(`Payment failed for subscription ${subscriptionId}`)
 

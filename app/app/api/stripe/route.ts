@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth, currentUser } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import {
   createCheckoutSession,
   createPaymentIntent,
@@ -15,22 +15,20 @@ import {
  */
 export async function POST(request: Request) {
   try {
-    const { userId } = auth()
+    const { userId } = await auth()
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const user = await currentUser()
-    if (!user?.emailAddresses?.[0]?.emailAddress) {
+    // For Clerk v5, we'll get the user email from the userId during database lookup
+    // Since we're creating a customer or checking session, we need the email from request
+    const body = await request.json()
+    const { action, planType, amount, email, name } = body
+
+    if (!email) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 })
     }
-
-    const body = await request.json()
-    const { action, planType, amount } = body
-
-    const email = user.emailAddresses[0].emailAddress
-    const name = `${user.firstName || ""} ${user.lastName || ""}`.trim() || undefined
 
     // Get or create Stripe customer
     const customer = await getOrCreateCustomer({

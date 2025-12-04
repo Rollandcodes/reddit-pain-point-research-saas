@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { checkAdminAccess } from '@/lib/admin'
 import { prisma } from '@/lib/db'
+import { Prisma } from '@prisma/client'
 
 /**
  * GET /api/admin/users
@@ -20,12 +21,12 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const search = searchParams.get('search') || ''
 
-    // Build search filter
-    const where = search
+    // Build search filter with proper types
+    const where: Prisma.UserWhereInput = search
       ? {
           OR: [
-            { name: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
+            { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            { email: { contains: search, mode: Prisma.QueryMode.insensitive } },
           ],
         }
       : {}
