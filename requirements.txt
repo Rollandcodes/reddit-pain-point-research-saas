@@ -11,3 +11,5 @@ flask
 fastapi
 uvicorn[standard]
 pydantic
+pytest-cov
+pytest
