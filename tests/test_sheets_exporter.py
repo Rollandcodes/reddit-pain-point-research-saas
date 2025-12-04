@@ -32,3 +32,35 @@ def test_push_to_sheets_raises_when_env_missing():
          patch.dict(os.environ, {}, clear=True):
         with pytest.raises(EnvironmentError):
             push_to_sheets([], spreadsheet_name="X", worksheet_name="Y")
+
+
+def test_push_to_sheets_with_injected_client_updates_values():
+    class FakeWorksheet:
+        def __init__(self):
+            self.updated = None
+        def clear(self):
+            pass
+        def update(self, values):
+            self.updated = values
+
+    class FakeSpreadsheet:
+        def __init__(self):
+            self.url = "https://fake.url"
+            self.ws = FakeWorksheet()
+        def worksheet(self, name):
+            raise Exception("no worksheet")
+        def add_worksheet(self, title, rows, cols):
+            return self.ws
+
+    class FakeClient:
+        def __init__(self):
+            self.spreadsheet = FakeSpreadsheet()
+        def open(self, name):
+            raise Exception("not found")
+        def create(self, name):
+            return self.spreadsheet
+
+    fake_client = FakeClient()
+    recs = [{"a": 1, "b": "x"}]
+    url = push_to_sheets(recs, spreadsheet_name="X", worksheet_name="Y", gspread_client=fake_client, credentials_factory=lambda: None)
+    assert url == "https://fake.url"

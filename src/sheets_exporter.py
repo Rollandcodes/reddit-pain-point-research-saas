@@ -38,32 +38,48 @@ def _decode_sa_json(env_value: str) -> str:
         return env_value
 
 
-def push_to_sheets(records: List[Dict], spreadsheet_name: str = "Reddit Pain Points", worksheet_name: str = "Sheet1") -> Optional[str]:
-    if gspread is None or Credentials is None:
-        raise RuntimeError("gspread/google-auth libraries are not installed")
+def push_to_sheets(
+    records: List[Dict],
+    spreadsheet_name: str = "Reddit Pain Points",
+    worksheet_name: str = "Sheet1",
+    gspread_client=None,
+    credentials_factory=None,
+) -> Optional[str]:
+    """Push records to Google Sheets.
 
-    sa_env = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
-    if not sa_env:
-        raise EnvironmentError("GOOGLE_SERVICE_ACCOUNT_JSON not set in environment")
+    Accepts optional injected `gspread_client` and `credentials_factory` for testability.
+    When omitted, uses real libraries and environment configuration.
+    """
+    if gspread_client is None or credentials_factory is None:
+        # Validate libs present
+        if gspread is None or Credentials is None:
+            raise RuntimeError("gspread/google-auth libraries are not installed")
 
-    sa_json = _decode_sa_json(sa_env)
+        sa_env = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+        if not sa_env:
+            raise EnvironmentError("GOOGLE_SERVICE_ACCOUNT_JSON not set in environment")
 
-    # write to temp file
-    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as f:
-        f.write(sa_json)
-        sa_path = f.name
+        sa_json = _decode_sa_json(sa_env)
 
-    creds = Credentials.from_service_account_file(sa_path, scopes=SCOPES)
-    gc = gspread.authorize(creds)
+        # write to temp file
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as f:
+            f.write(sa_json)
+            sa_path = f.name
+
+        creds = Credentials.from_service_account_file(sa_path, scopes=SCOPES)
+        gspread_client = gspread.authorize(creds)
+    else:
+        # Use injected credentials/client without touching env or filesystem
+        pass
 
     df = pd.DataFrame(records)
 
     # Try to open existing spreadsheet or create a new one
     sh = None
     try:
-        sh = gc.open(spreadsheet_name)
+        sh = gspread_client.open(spreadsheet_name)
     except Exception:
-        sh = gc.create(spreadsheet_name)
+        sh = gspread_client.create(spreadsheet_name)
 
     # Try to open or add worksheet
     try:

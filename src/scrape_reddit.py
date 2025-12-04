@@ -1,7 +1,7 @@
 """Simple Pushshift-based Reddit submissions fetcher for demo purposes."""
 from typing import List, Dict, Optional
 import requests
-from datetime import datetime
+from datetime import datetime, UTC
 
 PUSHSHIFT_SUBMISSION_URL = "https://api.pushshift.io/reddit/search/submission/"
 
@@ -28,7 +28,7 @@ def get_submissions(subreddits: List[str], keywords: Optional[List[str]] = None,
         for item in data:
             results.append({
                 "created_utc": item.get("created_utc"),
-                "date": datetime.utcfromtimestamp(item.get("created_utc", 0)).isoformat() + "Z" if item.get("created_utc") else None,
+                "date": datetime.fromtimestamp(item.get("created_utc", 0), UTC).isoformat().replace("+00:00", "Z") if item.get("created_utc") else None,
                 "subreddit": item.get("subreddit"),
                 "title": item.get("title", ""),
                 "permalink": item.get("permalink", ""),

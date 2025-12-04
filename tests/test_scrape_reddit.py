@@ -24,6 +24,7 @@ def test_get_submissions_normalizes_fields():
         assert rec["subreddit"] == "SaaS"
         assert rec["title"] == "Test title"
         assert rec["full_link"].startswith("https://reddit.com")
+        assert rec["date"].endswith("Z")
 
 
 def test_get_submissions_keyword_filtering():
