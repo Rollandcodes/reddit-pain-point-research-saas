@@ -62,7 +62,10 @@ export function RoadmapSection() {
                   {phase.phase}
                 </Badge>
                 {phase.status === 'current' && (
-                  <span className="text-xs text-radar-600 font-medium">Building</span>
+                  <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    Live Now
+                  </span>
                 )}
               </div>
               

@@ -71,7 +71,7 @@ export function WaitlistForm() {
 
       <div className="space-y-2">
         <Label htmlFor="role">What best describes you?</Label>
-        <Select value={role} onValueChange={setRole} required>
+        <Select value={role} onValueChange={setRole}>
           <SelectTrigger>
             <SelectValue placeholder="Select your role" />
           </SelectTrigger>
@@ -99,7 +99,7 @@ export function WaitlistForm() {
         <p className="text-sm text-red-600">{error}</p>
       )}
 
-      <Button type="submit" className="w-full" disabled={isLoading || !email || !role}>
+      <Button type="submit" className="w-full" disabled={isLoading || !email}>
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -111,7 +111,7 @@ export function WaitlistForm() {
       </Button>
 
       <p className="text-xs text-center text-muted-foreground">
-        No spam. We&apos;ll only email you about launch and product updates.
+        No spam. We&apos;ll only email you about launch. Unsubscribe anytime.
       </p>
     </form>
   )

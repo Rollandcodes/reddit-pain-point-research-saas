@@ -20,26 +20,27 @@ export function HeroSection() {
 
           {/* Headline */}
           <h1 id="hero-heading" className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight">
-            Find Profitable Problems in{" "}
+            Get AI-Ranked List of{" "}
             <span className="bg-gradient-to-r from-radar-600 to-radar-400 bg-clip-text text-transparent">
-              5 Minutes, Not 5 Weeks
+              50+ Customer Pain Points
             </span>
+            {" "}from Reddit in 5 Minutes
           </h1>
 
           {/* Subheading with concrete numbers */}
           <p className="mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl font-semibold text-foreground max-w-3xl mx-auto px-2 sm:px-0">
-            Discover 10-20 ranked pain points per scan
+            Analyze 1,000+ posts → Get 10-20 clustered pain point opportunities
           </p>
 
           {/* Benefit-focused description */}
           <p className="mt-4 sm:mt-6 text-base sm:text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto px-2 sm:px-0">
-            Validate your SaaS idea before writing code. Stop guessing what to build—let Reddit users tell you what they actually need.
+            Validate your SaaS idea before writing code. Our AI scans thousands of Reddit discussions, identifies patterns, and ranks opportunities by market demand—so you build what people actually need.
           </p>
 
           {/* Trust indicator */}
           <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2 text-sm sm:text-base text-muted-foreground">
             <Users className="h-4 w-4 sm:h-5 sm:w-5 text-radar-500" aria-hidden="true" />
-            <span className="font-medium">Trusted by 500+ indie founders</span>
+            <span className="font-medium">Join 500+ founders discovering validated SaaS ideas</span>
           </div>
 
           {/* CTAs - More prominent */}
@@ -64,23 +65,23 @@ export function HeroSection() {
             </Link>
           </div>
 
-          {/* Additional trust indicators */}
+          {/* Risk reversal & trust indicators */}
           <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
+              <span>3 free scans included</span>
+            </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
               <span>No credit card required</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
-              <span>Get results in minutes</span>
+              <span>Results in 5 minutes</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-500" aria-hidden="true" />
-              <span>Export to CSV</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span>Your data never shared</span>
+              <span>Cancel anytime</span>
             </div>
           </div>
         </div>

@@ -9,12 +9,24 @@ import {
 
 const faqs = [
   {
+    question: "What exactly is a 'scan'?",
+    answer: "One scan = one keyword search across unlimited subreddits, analyzing up to 1,000 posts per keyword. For example, searching 'project management tools' across r/productivity, r/SaaS, and r/startups counts as 1 scan. You get AI-clustered pain points, sentiment analysis, opportunity scores, and CSV export for each scan.",
+  },
+  {
+    question: "How are Opportunity Scores calculated?",
+    answer: "Opportunity Score (0-100) = (mention frequency × sentiment intensity × urgency keywords × recency). Higher scores = better SaaS opportunities. For example: a pain point mentioned 50+ times, with negative sentiment, urgent language like 'desperately need' or 'struggling', and recent posts gets 85-95. A rare complaint with neutral tone gets 20-40.",
+  },
+  {
     question: "How long does a scan take?",
     answer: "Most scans complete in 2-5 minutes depending on the volume of posts. We analyze thousands of Reddit discussions in real-time, cluster similar pain points using AI, and generate your report. You'll receive an email notification when it's ready.",
   },
   {
     question: "What subreddits are supported?",
     answer: "PainPointRadar can scan any public subreddit. Popular choices include r/SaaS, r/startups, r/Entrepreneur, r/smallbusiness, r/freelance, and niche communities related to your target market. You can also let our AI automatically discover relevant subreddits based on your keywords.",
+  },
+  {
+    question: "Do you comply with Reddit's Terms of Service?",
+    answer: "Yes, absolutely. We use Reddit's official API and respect all rate limits and data usage policies. We only access public posts (never private communities or DMs), attribute content to Reddit, and don't scrape data in violation of their ToS. Your scans are fully compliant.",
   },
   {
     question: "How is this different from manual research?",

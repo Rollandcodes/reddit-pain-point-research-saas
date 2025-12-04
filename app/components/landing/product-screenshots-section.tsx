@@ -5,22 +5,22 @@ import { Card } from "@/components/ui/card"
 
 const screenshots = [
   {
-    title: "Dashboard with Scan Results",
-    description: "Real-time pain point analysis with clustering and sentiment tracking",
+    title: "1. Enter Keywords & Select Subreddits",
+    description: "Start your scan by entering pain point keywords like 'too expensive' or 'frustrated with'. Choose target subreddits or let our AI discover them automatically.",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&q=80",
-    alt: "PainPointRadar dashboard showing scan results and pain point clusters",
+    alt: "PainPointRadar keyword entry interface with subreddit selection",
   },
   {
-    title: "Pain Point Detail Card",
-    description: "Detailed insights with opportunity scores and post counts",
+    title: "2. AI Analyzes & Clusters Pain Points",
+    description: "Our AI scans 1,000+ Reddit posts in real-time, groups similar complaints using semantic clustering, and calculates opportunity scores (0-100) based on frequency, sentiment, and urgency.",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&q=80",
-    alt: "Pain point detail card with comprehensive metrics and analysis",
+    alt: "Pain point clustering analysis in progress with AI-powered grouping",
   },
   {
-    title: "CSV Export Preview",
-    description: "Export all insights to CSV for further analysis",
+    title: "3. View Ranked Results & Export",
+    description: "Get 10-20 clustered pain points ranked by opportunity score. Each cluster includes post count, sentiment analysis, real quotes, and sources. Export everything to CSV with one click.",
     image: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&h=600&fit=crop&q=80",
-    alt: "CSV export preview showing data export options and formatted results",
+    alt: "Ranked pain point results with opportunity scores and CSV export option",
   },
 ]
 

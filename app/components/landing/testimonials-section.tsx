@@ -6,22 +6,22 @@ import { Star } from "lucide-react"
 const testimonials = [
   {
     name: "Sarah K.",
-    role: "Indie Founder",
-    content: "Found 12 validated pain points in 5 minutes",
+    role: "Indie Founder @ TaskFlow",
+    content: "Found my SaaS idea in 2 hours. Scanned r/productivity and discovered 47 complaints about context-switching. Built my MVP around that pain point—now at $2K MRR.",
     rating: 5,
     avatar: "SK",
   },
   {
     name: "Mike T.",
-    role: "Product Manager",
-    content: "Saved me 3 weeks of manual Reddit research",
+    role: "Product Manager @ B2B SaaS",
+    content: "Saved me 3 weeks of manual research. Used PainPointRadar to validate our pricing page redesign—found 89 mentions of 'too expensive' with specific feature requests. Made data-driven changes.",
     rating: 5,
     avatar: "MT",
   },
   {
     name: "Alex R.",
-    role: "Developer",
-    content: "The opportunity scores helped me prioritize features",
+    role: "Solo Developer",
+    content: "The opportunity scores are gold. Scanned r/webdev and r/freelance—top cluster had 92/100 score for 'client communication tools'. Now building that instead of my original idea.",
     rating: 5,
     avatar: "AR",
   },

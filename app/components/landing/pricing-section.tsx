@@ -8,36 +8,56 @@ import Link from "next/link"
 
 const plans = [
   {
-    name: "Starter",
-    price: "$19",
-    period: "/month",
-    description: "Perfect for getting started with pain point research",
+    name: "Free",
+    price: "$0",
+    period: "/forever",
+    description: "Try PainPointRadar with no commitment",
     features: [
-      "5 scans per day",
-      "Up to 3 subreddits",
+      "3 free scans",
+      "Unlimited subreddits",
+      "AI clustering & scoring",
       "CSV export",
-      "7-day free trial",
+      "7-day report retention",
     ],
-    cta: "Start Free Trial",
-    href: "/sign-up?plan=starter",
+    cta: "Start Free",
+    href: "#waitlist",
     highlighted: false,
   },
   {
-    name: "Professional",
-    price: "$49",
+    name: "Pro",
+    price: "$29",
     period: "/month",
-    description: "For serious founders and power users",
+    description: "For founders validating multiple ideas",
     features: [
-      "15 scans per day",
-      "Up to 5 subreddits",
-      "Priority support",
-      "API access",
-      "7-day free trial",
+      "10 scans per month",
+      "Unlimited subreddits",
+      "Priority processing",
+      "30-day report retention",
+      "Email support",
+      "PDF export",
     ],
-    cta: "Start Free Trial",
-    href: "/sign-up?plan=professional",
+    cta: "Join Waitlist",
+    href: "#waitlist",
     highlighted: true,
     badge: "Most Popular",
+  },
+  {
+    name: "Premium",
+    price: "$79",
+    period: "/month",
+    description: "For agencies and power users",
+    features: [
+      "Unlimited scans",
+      "Unlimited subreddits",
+      "Priority support",
+      "Unlimited retention",
+      "API access",
+      "Custom integrations",
+      "Team collaboration",
+    ],
+    cta: "Join Waitlist",
+    href: "#waitlist",
+    highlighted: false,
   },
 ]
 
@@ -46,15 +66,16 @@ export function PricingSection() {
     <section id="pricing" className="py-12 sm:py-16 md:py-20">
       <div className="container px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
+          <Badge className="mb-4 bg-green-600">🎉 Launch Pricing - Lock in now!</Badge>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl mb-3 sm:mb-4">
             Simple, Transparent Pricing
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2 sm:px-0">
-            Start free, upgrade when you need more power
+            Start with 3 free scans. No credit card required. Cancel anytime.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.name} 
@@ -101,9 +122,10 @@ export function PricingSection() {
           ))}
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          All plans include a 14-day money-back guarantee. No questions asked.
-        </p>
+        <div className="text-center text-sm text-muted-foreground mt-8 space-y-2">
+          <p>✅ 14-day money-back guarantee on all paid plans. No questions asked.</p>
+          <p className="font-medium">🚀 Lock in launch pricing before it increases. Early adopters save 40%.</p>
+        </div>
       </div>
     </section>
   )

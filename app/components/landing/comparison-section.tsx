@@ -9,11 +9,11 @@ const comparisons = [
   {
     feature: "Posts analyzed",
     manual: "50-100 posts",
-    painpointradar: "5,000+ posts",
+    painpointradar: "1,000+ per scan",
   },
   {
     feature: "Pattern recognition",
-    manual: "Human bias",
+    manual: "Manual note-taking",
     painpointradar: "AI-powered clustering",
   },
   {
@@ -24,15 +24,25 @@ const comparisons = [
   {
     feature: "Opportunity scoring",
     manual: "Gut feeling",
-    painpointradar: "Data-driven ranking",
+    painpointradar: "Data-driven 0-100 ranking",
   },
   {
-    feature: "Reproducible",
+    feature: "Pain point clustering",
+    manual: "Scattered notes",
+    painpointradar: "Auto-grouped themes",
+  },
+  {
+    feature: "Approach",
+    manual: "Reactive (wait for mentions)",
+    painpointradar: "Proactive (discover patterns)",
+  },
+  {
+    feature: "CSV export",
     manual: false,
     painpointradar: true,
   },
   {
-    feature: "Scalable",
+    feature: "Reproducible",
     manual: false,
     painpointradar: true,
   },
@@ -95,6 +105,15 @@ export function ComparisonSection() {
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Competitive positioning note */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              <strong>vs Keyword Alerts (F5Bot, Syften):</strong> We don&apos;t just notify you when keywords appear—we analyze thousands of existing posts, find patterns you didn&apos;t know to look for, and rank opportunities.
+              <br />
+              <strong>vs Audience Research Tools (Gummy Search):</strong> We go deeper with AI clustering, sentiment scoring, and opportunity ranking—not just keyword frequency.
+            </p>
           </div>
         </div>
       </div>

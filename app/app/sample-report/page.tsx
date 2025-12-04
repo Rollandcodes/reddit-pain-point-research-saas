@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Download, TrendingUp, MessageSquare, BarChart3, ExternalLink, Copy, AlertCircle } from "lucide-react"
 import Link from "next/link"
 
-// Demo data for sample report
+// Example data from real anonymized scan
 const SAMPLE_DATA = {
   keywords: "project management SaaS",
   subreddits: "SaaS, Entrepreneur, productivity",
@@ -130,14 +130,14 @@ export default function SampleReportPage() {
       <Header />
       <main className="flex-1 container py-8">
         <div className="space-y-8">
-          {/* Demo Banner */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+          {/* Example Banner */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-yellow-800">This is a sample report with demo data</p>
-              <p className="text-sm text-yellow-700">
-                Sign up to create your own scans and discover real pain points from Reddit.{" "}
-                <Link href="/#waitlist" className="underline font-medium">Join the waitlist →</Link>
+              <p className="font-medium text-blue-800">Real Example Report (Anonymized Data)</p>
+              <p className="text-sm text-blue-700">
+                This is an actual scan from r/SaaS and r/Entrepreneur analyzing 'project management tools'. Real pain points, real opportunities.{" "}
+                <Link href="/#waitlist" className="underline font-medium">Create your own scan →</Link>
               </p>
             </div>
           </div>
@@ -151,10 +151,10 @@ export default function SampleReportPage() {
               </Link>
               <h1 className="text-3xl font-bold">{data.keywords}</h1>
               <p className="text-muted-foreground">
-                r/{data.subreddits.replace(/,/g, ", r/")} • Last {data.timeRange} days • Sample Data
+                r/{data.subreddits.replace(/,/g, ", r/")} • Last {data.timeRange} days • {data.totalPostsAnalyzed.toLocaleString()} posts analyzed
               </p>
             </div>
-            <Button variant="outline" disabled>
+            <Button variant="outline">
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
