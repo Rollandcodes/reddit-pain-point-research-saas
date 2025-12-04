@@ -1,0 +1,10 @@
+[run]
+omit = 
+    src/exporter.py
+    src/main.py
+    src/pdf_reporter.py
+    src/scrape_reddit.py
+    src/sheets_exporter.py
+
+[report]
+show_missing = True

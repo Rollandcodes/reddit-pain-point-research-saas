@@ -1,3 +1,95 @@
+import os
+import pytest
+from unittest.mock import patch, Mock
+
+from src.browseai_runner import validate_environment, run_browseai_job, run_from_env
+
+
+def test_validate_environment_missing_vars_raises():
+    with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "", "BROWSEAI_API_KEY": ""}, clear=True):
+        with pytest.raises(EnvironmentError):
+            validate_environment()
+
+
+def test_validate_environment_ok():
+    with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "https://x", "BROWSEAI_API_KEY": "sk"}, clear=True):
+        assert validate_environment() is True
+
+
+def test_run_browseai_job_immediate_return():
+    with patch("src.browseai_runner.requests.post") as mock_post:
+        resp = Mock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {"result": {"ok": True}}
+        mock_post.return_value = resp
+
+        out = run_browseai_job("https://run", "sk", payload={"p": 1})
+        assert out == {"result": {"ok": True}}
+
+
+def test_run_browseai_job_polls_to_completion():
+    # First POST returns async run info; subsequent GET completes
+    with patch("src.browseai_runner.requests.post") as mock_post, \
+         patch("src.browseai_runner.requests.get") as mock_get:
+        post_resp = Mock()
+        post_resp.raise_for_status.return_value = None
+        post_resp.json.return_value = {"status": "running", "status_url": "https://status"}
+        mock_post.return_value = post_resp
+
+        get_resp = Mock()
+        get_resp.raise_for_status.return_value = None
+        # First poll returns running, second poll returns completed
+        get_resp.json.side_effect = [
+            {"status": "running"},
+            {"status": "completed", "result": {"done": True}},
+        ]
+        mock_get.return_value = get_resp
+
+        out = run_browseai_job("https://run", "sk", payload={"p": 1}, timeout=5)
+        assert out.get("result", {}).get("done") is True
+
+
+def test_run_browseai_job_failure_raises_runtimeerror():
+    with patch("src.browseai_runner.requests.post") as mock_post, \
+         patch("src.browseai_runner.requests.get") as mock_get:
+        post_resp = Mock()
+        post_resp.raise_for_status.return_value = None
+        post_resp.json.return_value = {"status": "running", "status_url": "https://status"}
+        mock_post.return_value = post_resp
+
+        get_resp = Mock()
+        get_resp.raise_for_status.return_value = None
+        get_resp.json.return_value = {"status": "failed", "error": "x"}
+        mock_get.return_value = get_resp
+
+        with pytest.raises(RuntimeError):
+            run_browseai_job("https://run", "sk", timeout=2)
+
+
+def test_run_browseai_job_timeout_raises():
+    with patch("src.browseai_runner.requests.post") as mock_post, \
+         patch("src.browseai_runner.requests.get") as mock_get:
+        post_resp = Mock()
+        post_resp.raise_for_status.return_value = None
+        post_resp.json.return_value = {"status": "running", "status_url": "https://status"}
+        mock_post.return_value = post_resp
+
+        get_resp = Mock()
+        get_resp.raise_for_status.return_value = None
+        get_resp.json.return_value = {"status": "running"}
+        mock_get.return_value = get_resp
+
+        with pytest.raises(TimeoutError):
+            run_browseai_job("https://run", "sk", timeout=1)
+
+
+def test_run_from_env_calls_run_browseai_job():
+    with patch.dict(os.environ, {"BROWSEAI_RUN_URL": "https://run", "BROWSEAI_API_KEY": "sk"}, clear=True):
+        with patch("src.browseai_runner.run_browseai_job") as mock_run:
+            mock_run.return_value = {"ok": True}
+            out = run_from_env(payload={"x": 1}, timeout=3)
+            assert out == {"ok": True}
+            mock_run.assert_called_once()
 """Smoke tests for browseai_runner module."""
 import os
 import pytest
